@@ -1,0 +1,87 @@
+{
+  "project_info": {
+    "project_number": "575157913090",
+    "project_id": "firebase-elife"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:575157913090:android:92333d9fc4833737",
+        "android_client_info": {
+          "package_name": "com.endolife.elfit.googleauth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "575157913090-glvmbc1vtosgfdccvvhdc671qouuuhcj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.endolife.elfit.googleauth",
+            "certificate_hash": "4113ED0FC93709C1050CE854D2A58039D8A8A744"
+          }
+        },
+        {
+          "client_id": "575157913090-anikiiq0dl309rfr0os13kfl80k3aer0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2gv8cRgb63nQ5Mslm90UNzt6qF1jRg-g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:575157913090:android:e89c7e58a53dd5f7",
+        "android_client_info": {
+          "package_name": "com.endolife.elfit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "575157913090-7590j2bih5fde0gsdhjantcd192umvda.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.endolife.elfit",
+            "certificate_hash": "4113ED0FC93709C1050CE854D2A58039D8A8A744"
+          }
+        },
+        {
+          "client_id": "575157913090-anikiiq0dl309rfr0os13kfl80k3aer0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2gv8cRgb63nQ5Mslm90UNzt6qF1jRg-g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

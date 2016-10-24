@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">Endolife Fit</string>
+
+    <string name="app_description">Fitness Tracker</string>
+    <string name="user">ravi@endolife.com</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_check_sensors">Available Sensors</string>
+    <string name="title_activity_custom_algo_results">Accelerometer Steps Today</string>
+    <string name="title_activity_custom_algo_history">Accelerometer Steps History</string>
+    <string name="title_activity_steps_counter">Steps with Step Counter </string>
+
+    <string name="menu_check_sensors">Check Sensors</string>
+    <string name="menu_accelerometer_steps">Accelerometer Steps</string>
+    <string name="menu_accelerometer_history">Acceleromter History</string>
+    <string name="menu_steps_counter">Steps Counter</string>
+    <string name="heading_steps_counter">Steps since reboot: 0</string>
+    <string name="menu_steps_history">Steps History</string>
+    <string name="heading_steps_history">Steps History with Step counters</string>
+    <string name="title_activity_steps_history">Steps History Activity</string>
+
+
+    <string name="total_steps_custom_algo_results">Total Steps</string>
+    <string name="total_distance_custom_algo_results">Total Distance</string>
+    <string name="total_duration_custom_algo_results">Total Duration</string>
+    <string name="average_speed_custom_algo_results">Average Speed</string>
+    <string name="average_step_frequency_custom_algo_results">Average Step Frequency</string>
+    <string name="calories_burned_custom_algo_results">Total Calories Burned</string>
+    <string name="activity_type_custom_algo_results">Physical Activity Type</string>
+
+    <string name="steps_by_date_custom_algo_history">Steps by Date</string>
+
+    <string name="available_sensors_check_sensors">Available Sensors</string>
+    <string name="title_activity_time_line">Time Line</string>
+    <string name="title_activity_google_auth">Google Auth</string>
+    <string name="google_signin">Google Signin</string>
+
+    <string name="signed_out">Signed Out </string>
+    <string name="signed_in_fmt">Display Name: %s</string>
+    <string name="title_activity_time_chart">Time Chart</string>
+    <string name="title_activity_day_view">DayView</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>

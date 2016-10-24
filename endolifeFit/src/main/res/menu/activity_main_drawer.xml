@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/check_sensors"
+            android:icon="@drawable/ic_graphic_eq"
+            android:title="@string/menu_check_sensors" />
+        <item
+            android:id="@+id/custom_accelerometer"
+            android:icon="@drawable/ic_counter"
+            android:title="@string/menu_accelerometer_steps" />
+        <item
+            android:id="@+id/history_accelerometer"
+            android:icon="@drawable/ic_add2"
+            android:title="@string/menu_accelerometer_history" />
+        <item
+            android:id="@+id/steps_counter"
+            android:icon="@drawable/ic_pedestrian"
+            android:title="@string/menu_steps_counter" />
+        <item
+            android:id="@+id/history_steps"
+            android:icon="@drawable/ic_add1"
+            android:title="@string/menu_steps_history" />
+        <item
+            android:id="@+id/google_signin"
+            android:icon="@drawable/ic_perm_identity_black_24dp"
+            android:title="@string/google_signin" />
+
+        <!-- default items from the new project
+        <item
+            android:id="@+id/nav_camera"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Import" />
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Gallery" />
+        <item
+            android:id="@+id/nav_slideshow"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Slideshow" />
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Tools" />
+        -->
+    </group>
+
+    <!--Let us see the use of this later
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Send" />
+        </menu>
+    </item>
+ -->
+</menu>
