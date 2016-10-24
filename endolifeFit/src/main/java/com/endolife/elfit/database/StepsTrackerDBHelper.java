@@ -14,8 +14,12 @@ import android.util.Log;
 import com.endolife.elfit.models.BarChartTimeEntry;
 import com.endolife.elfit.models.DateStepsModel;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
 public class StepsTrackerDBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "StepsTrackerDatabase";
     private static final String TABLE_STEPS_SUMMARY = "StepsTrackerSummary";
@@ -43,9 +47,30 @@ public class StepsTrackerDBHelper extends SQLiteOpenHelper {
 
         boolean createSuccessful = false;
         Calendar mCalendar = Calendar.getInstance();
+        TimeZone timezone = TimeZone.getDefault();
+        mCalendar.setTimeZone(timezone);
+
+
+        /*
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
+
+
+        SimpleDateFormat dayFormatter = new SimpleDateFormat("ddd");
+
+        String timezoneID = TimeZone.getDefault().getID();
+        dateFormatter.setTimeZone(TimeZone.getTimeZone(timezoneID));
+        Date mCalendar = Calendar.getInstance().getTime();
+        String todayDate = dateFormatter.format(mCalendar);
+        Log.d(TAG, "today formatted date: " + todayDate);
+
+        */
+
         String todayDate = String.valueOf(mCalendar.get(Calendar.MONTH)+1)+"/" + String.valueOf(mCalendar.get(Calendar.DAY_OF_MONTH))+"/"+String.valueOf(mCalendar.get(Calendar.YEAR));
         int todayNumber =mCalendar.get(mCalendar.DAY_OF_YEAR);
-        Log.d(TAG, "Today number: " + todayNumber);
+        //dayFormatter.setTimeZone(TimeZone.getTimeZone(timezoneID));
+        //int todayNumber = dayFormatter.format(mCalendar);
+        Log.d(TAG, "Today number: " + todayNumber + " Today Date: " + todayDate + " TimeZone: " + timezone);
+
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues values = new ContentValues();
@@ -64,6 +89,33 @@ public class StepsTrackerDBHelper extends SQLiteOpenHelper {
             e.printStackTrace();
         }
         return createSuccessful;
+    }
+
+    public int [] getStepsByDay(int day){
+        int stepType[] = new int[3];
+        String selectQuery = "SELECT " + STEP_TYPE + " FROM " + TABLE_STEPS_SUMMARY +" WHERE " + T0DAY_NO +" = '"+ day + "'";
+        try {
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor c = db.rawQuery(selectQuery, null);
+            if (c.moveToFirst()) {
+                do {
+                    switch(c.getInt((c.getColumnIndex(STEP_TYPE))))
+                    {
+                        case WALKING: ++stepType[0];
+                            break;
+                        case JOGGING: ++stepType[1];
+                            break;
+                        case RUNNING: ++stepType[2];
+                            break;
+                    }
+                } while (c.moveToNext());
+            }
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stepType;
+
     }
 
     public int [] getStepsByDate(String date)
@@ -247,6 +299,99 @@ public class StepsTrackerDBHelper extends SQLiteOpenHelper {
 
         return barChartTimeEntries;
     }
+
+    //Get sessions and their time durations for each step type on a given day
+
+    public ArrayList<BarChartTimeEntry> getChartTimeEntriesTotalByDate(int day){
+
+        Log.d(TAG, "inside getCharTotalEntries: " + day);
+
+        ArrayList<String> sessionNameList = new ArrayList<String>();
+        ArrayList<BarChartTimeEntry> barChartTimeEntries = new ArrayList<BarChartTimeEntry>();
+        try {
+            String selectQuery = "SELECT DISTINCT "+ SESSION_ID +" FROM " + TABLE_STEPS_SUMMARY + " WHERE " + T0DAY_NO + " = \"" + day + "\"" + " ORDER BY " + SESSION_ID;
+            Log.d(TAG, "query: " + selectQuery);
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor c = db.rawQuery(selectQuery, null);
+            Log.d(TAG, "count of sessions: " + c.getCount());
+            if (c.moveToFirst()) {
+                do {
+                    Log.d(TAG, "session: " + c.getString((c.getColumnIndex(SESSION_ID))));
+                    sessionNameList.add(c.getString((c.getColumnIndex(SESSION_ID))));
+                } while (c.moveToNext());
+            }
+
+            int sizeSessionNameList = sessionNameList.size();
+            Log.d(TAG, "count of sessions xx: " + sessionNameList.get(0));
+            int walkingCount = 0;
+            int joggingCount = 0;
+            int runningCount = 0;
+
+            for (int i = 0; i < sizeSessionNameList; i++) {
+
+                String selectTimeQueryWalking = "SELECT " + SESSION_ID + "," + "count(" + STEP_TYPE + ") " + STEPS_COUNT + " FROM " + TABLE_STEPS_SUMMARY + " WHERE " + SESSION_ID +" = '"+ sessionNameList.get(i) + "'" + "AND " +  STEP_TYPE+" = " +  WALKING + " AND " + T0DAY_NO + " = \"" + day + "\"" ;
+                String selectTimeQueryJogging = "SELECT " + SESSION_ID + "," + "count(" + STEP_TYPE + ") " + STEPS_COUNT + " FROM " + TABLE_STEPS_SUMMARY + " WHERE " + SESSION_ID +" = '"+ sessionNameList.get(i) + "'" + "AND " +  STEP_TYPE+" = " + JOGGING + " AND " + T0DAY_NO + " = \"" + day + "\"" ;
+                String selectTimeQueryRunning = "SELECT " + SESSION_ID + "," + "count(" + STEP_TYPE + ") " + STEPS_COUNT + " FROM " + TABLE_STEPS_SUMMARY + " WHERE " + SESSION_ID +" = '"+ sessionNameList.get(i) + "'" + "AND " +  STEP_TYPE+" = " + RUNNING + " AND " + T0DAY_NO + " = \"" + day + "\"" ;
+
+                // String selectTimeQueryRunning = "SELECT MIN("+ STEP_TIME + ") " + MIN_STEP_TIME + " , MAX(" + STEP_TIME +") "+ MAX_STEP_TIME+ " FROM " + TABLE_STEPS_SUMMARY +" WHERE " + SESSION_ID +" = '"+ sessionNameList.get(i) + "'" + "AND " +  STEP_TYPE+" = " + RUNNING;
+                float currentSessionDuration = 0f;
+                Cursor cTime = db.rawQuery(selectTimeQueryWalking, null);
+                if(cTime.getCount() == 0){
+                    //We wont do anything here as the timeduration will not change
+                } else if (cTime.moveToFirst()) {
+                    do {
+                        walkingCount = cTime.getInt((cTime.getColumnIndex(STEPS_COUNT)));
+                        Log.d(TAG, "Walking count: " + walkingCount + "- Session Id : " + sessionNameList.get(i));
+                        currentSessionDuration = (walkingCount*1.0f)  / 60;
+                        Log.d(TAG, "Time duration: " + currentSessionDuration);
+                        break;
+                    } while (cTime.moveToNext());
+                }
+                cTime.close();
+
+                cTime = db.rawQuery(selectTimeQueryJogging, null);
+                if(cTime.getCount() == 0){
+                    //We wont do anything here as the timeduration will not change
+                } else if (cTime.moveToFirst()) {
+                    do {
+                        joggingCount = cTime.getInt((cTime.getColumnIndex(STEPS_COUNT)));
+                        Log.d(TAG, "Jogging count: " + joggingCount + "- Session Id : " + sessionNameList.get(i));
+                        currentSessionDuration = currentSessionDuration + (joggingCount*0.7f) / 60;
+                        Log.d(TAG, "Time duration after adding waling and jogging: " + currentSessionDuration);
+                        break;
+                    } while (cTime.moveToNext());
+                }
+                cTime.close();
+
+                cTime = db.rawQuery(selectTimeQueryRunning, null);
+                if(cTime.getCount() == 0){
+                    //We wont do anything here as the timeduration will not change
+                }else if (cTime.moveToFirst()) {
+                    do {
+                        runningCount = cTime.getInt((cTime.getColumnIndex(STEPS_COUNT)));
+                        currentSessionDuration = currentSessionDuration + (runningCount*0.4f) / 60;
+                        Log.d(TAG, "Time duration after adding all three: " + currentSessionDuration);
+                        break;
+                    } while (cTime.moveToNext());
+                }
+                cTime.close();
+
+                //Add a new barchart entry with details
+                BarChartTimeEntry barChartTimeEntry = new BarChartTimeEntry();
+                barChartTimeEntry.sessionId = sessionNameList.get(i);
+                barChartTimeEntry.timeDuration = currentSessionDuration;
+                barChartTimeEntries.add(barChartTimeEntry);
+
+            }
+            c.close();
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return barChartTimeEntries;
+    }
+
 
     //For Debug Purposes
     public ArrayList<String> getAvailableDates()

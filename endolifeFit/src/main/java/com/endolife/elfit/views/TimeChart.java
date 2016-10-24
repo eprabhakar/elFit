@@ -25,6 +25,7 @@ import com.github.mikephil.charting.listener.OnChartGestureListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 public class TimeChart extends AppCompatActivity implements OnChartGestureListener{
 
@@ -35,6 +36,7 @@ public class TimeChart extends AppCompatActivity implements OnChartGestureListen
     private static final int JOGGING = 2;
     private static final int WALKING = 1;
     protected String todayDate;
+    protected int todayNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +56,18 @@ public class TimeChart extends AppCompatActivity implements OnChartGestureListen
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Log.d(TAG, "In the oncreate:");
+        this.createChart(); //Old way of displaying all three walking types
 
+
+    }
+
+    private void createChartWithType(){
         BarChart barChart = (BarChart) findViewById(R.id.bar_chart);
         Calendar mCalendar = Calendar.getInstance();
+        TimeZone timezone = TimeZone.getDefault();
+        mCalendar.setTimeZone(timezone);
         todayDate = String.valueOf(mCalendar.get(Calendar.MONTH)+1)+"/" + String.valueOf(mCalendar.get(Calendar.DAY_OF_MONTH))+"/"+String.valueOf(mCalendar.get(Calendar.YEAR));
+        todayNumber = mCalendar.get(mCalendar.DAY_OF_YEAR);
         Log.d(TAG, "today date:" + todayDate);
 
         mStepsTrackerDBHelper = new StepsTrackerDBHelper(this);
@@ -76,7 +86,7 @@ public class TimeChart extends AppCompatActivity implements OnChartGestureListen
         for(BarChartTimeEntry data:mTimeEntriesList) {
             values[++step] = data.sessionId;
             //Log.d(TAG, "Session id :" + data.sessionId);
-           // if((step == 1) && (Integer.parseInt(data.sessionId)>0)) sessionStart = Integer.parseInt(data.sessionId);
+            // if((step == 1) && (Integer.parseInt(data.sessionId)>0)) sessionStart = Integer.parseInt(data.sessionId);
             if(data.type == WALKING) {
                 entriesGroup1.add(new BarEntry(step, data.timeDuration));
             } else if (data.type == JOGGING){
@@ -101,7 +111,7 @@ public class TimeChart extends AppCompatActivity implements OnChartGestureListen
         //barChart.setTouchEnabled(true);
 
         // enable scaling and dragging
-       // mChart.setDragEnabled(true);
+        // mChart.setDragEnabled(true);
         //barChart.setScaleEnabled(true);
         // mChart.setScaleXEnabled(true);
         // mChart.setScaleYEnabled(true);
@@ -131,9 +141,93 @@ public class TimeChart extends AppCompatActivity implements OnChartGestureListen
         barChart.setOnChartGestureListener(this);
 
         barChart.setData(data);
-       // barChart.groupBars(sessionStart, groupSpace, barSpace); // perform the "explicit" grouping
+        // barChart.groupBars(sessionStart, groupSpace, barSpace); // perform the "explicit" grouping
         barChart.invalidate(); // refresh
+    }
 
+    private void createChart(){
+
+        BarChart barChart = (BarChart) findViewById(R.id.bar_chart);
+        Calendar mCalendar = Calendar.getInstance();
+        TimeZone timezone = TimeZone.getDefault();
+        mCalendar.setTimeZone(timezone);
+        todayDate = String.valueOf(mCalendar.get(Calendar.MONTH)+1)+"/" + String.valueOf(mCalendar.get(Calendar.DAY_OF_MONTH))+"/"+String.valueOf(mCalendar.get(Calendar.YEAR));
+        todayNumber = mCalendar.get(mCalendar.DAY_OF_YEAR);
+        Log.d(TAG, "today date:" + todayDate);
+
+        mStepsTrackerDBHelper = new StepsTrackerDBHelper(this);
+        mTimeEntriesList = mStepsTrackerDBHelper.getChartTimeEntriesByDate(todayDate);
+
+        String[] values = new String[mTimeEntriesList.size()+1];
+        Log.d(TAG, "size of mTimeEntriesList: " + values.length);
+
+        List<BarEntry> entriesGroup1 = new ArrayList<>();
+        List<BarEntry> entriesGroup2 = new ArrayList<>();
+        List<BarEntry> entriesGroup3 = new ArrayList<>();
+
+        // fill the lists
+        int step = 0;
+        float sessionStart = 0f;
+        for(BarChartTimeEntry data:mTimeEntriesList) {
+            values[++step] = data.sessionId;
+            //Log.d(TAG, "Session id :" + data.sessionId);
+            // if((step == 1) && (Integer.parseInt(data.sessionId)>0)) sessionStart = Integer.parseInt(data.sessionId);
+            if(data.type == WALKING) {
+                entriesGroup1.add(new BarEntry(step, data.timeDuration));
+            } else if (data.type == JOGGING){
+                entriesGroup2.add(new BarEntry(step, data.timeDuration));
+            } else if (data.type == RUNNING) {
+                entriesGroup3.add(new BarEntry(step, data.timeDuration));
+            }
+        }
+
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setValueFormatter(new TimeChart.MyXAxisValueFormatter(values));
+        //XAxis.XAxisPosition pos = XAxis.XAxisPosition.BOTTOM;
+        xAxis.setLabelRotationAngle(90);
+        xAxis.setGranularity(1f);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        //enable dragging
+        barChart.setDragEnabled(true);
+
+
+        // enable touch gestures
+        //barChart.setTouchEnabled(true);
+
+        // enable scaling and dragging
+        // mChart.setDragEnabled(true);
+        //barChart.setScaleEnabled(true);
+        // mChart.setScaleXEnabled(true);
+        // mChart.setScaleYEnabled(true);
+
+        // if disabled, scaling can be done on x- and y-axis separately
+        barChart.setPinchZoom(true);
+
+        BarDataSet set1 = new BarDataSet(entriesGroup1, "Walking");
+        BarDataSet set2 = new BarDataSet(entriesGroup2, "Jogging");
+        BarDataSet set3 = new BarDataSet(entriesGroup3, "Running");
+
+
+
+        //set colors
+        set1.setColors(new int[]{R.color.walkingColor}, this);
+        set2.setColors(new int[]{R.color.joggingColor}, this);
+        set3.setColors(new int[]{R.color.runningColor}, this);
+
+        float groupSpace = 0.04f;
+        float barSpace = 0.02f; // x2 dataset
+        float barWidth = 0.40f; // x2 dataset
+        // (0.02 + 0.30) * 3 + 0.04 = 1.00 -> interval per "group"
+
+        BarData data = new BarData(set1, set2, set3);
+        data.setBarWidth(barWidth); // set the width of each bar
+        //set the listner for gesture
+        barChart.setOnChartGestureListener(this);
+
+        barChart.setData(data);
+        // barChart.groupBars(sessionStart, groupSpace, barSpace); // perform the "explicit" grouping
+        barChart.invalidate(); // refresh
 
     }
 

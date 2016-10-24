@@ -50,7 +50,6 @@ public class StepsTrackerService extends Service {
 
 
     private void startAccelerometer(){
-
         SimpleDateFormat formatter = new SimpleDateFormat("HH");
         String timezoneID = TimeZone.getDefault().getID();
         formatter.setTimeZone(TimeZone.getTimeZone(timezoneID));
@@ -60,6 +59,7 @@ public class StepsTrackerService extends Service {
 
         Log.d(TAG, "session ID: " + sessionId);
         Log.d(TAG, "current timezone: " + timezoneID + " : "+ TimeZone.getTimeZone(timezoneID));
+
         mAccelerometerSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mAccelerometerListener = new AccelerometerListener();
         mSensorManager.registerListener(mAccelerometerListener, mAccelerometerSensor, SensorManager.SENSOR_DELAY_FASTEST);
@@ -71,6 +71,15 @@ public class StepsTrackerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        SimpleDateFormat formatter = new SimpleDateFormat("HH");
+        String timezoneID = TimeZone.getDefault().getID();
+        formatter.setTimeZone(TimeZone.getTimeZone(timezoneID));
+
+        Date date = Calendar.getInstance().getTime();
+        sessionId = formatter.format(date);
+
+        Log.d(TAG, "session ID: " + sessionId);
+        Log.d(TAG, "current timezone: " + timezoneID + " : "+ TimeZone.getTimeZone(timezoneID));
 
         mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         if(mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR) != null)
