@@ -1,10 +1,12 @@
 package com.github.mikephil.charting.interfaces.dataprovider;
 
+import android.graphics.PointF;
 import android.graphics.RectF;
 
 import com.github.mikephil.charting.data.ChartData;
-import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.MPPointF;
+import com.github.mikephil.charting.utils.Utils;
 
 /**
  * Interface that provides everything there is to know about the dimensions,
@@ -61,7 +63,7 @@ public interface ChartInterface {
 
     RectF getContentRect();
 
-    IValueFormatter getDefaultValueFormatter();
+    ValueFormatter getDefaultValueFormatter();
 
     ChartData getData();
 

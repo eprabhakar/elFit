@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Build;
 import android.text.Layout;
@@ -21,7 +22,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
@@ -141,8 +142,11 @@ public class PieChartRenderer extends DataRenderer {
 
         PieData pieData = mChart.getData();
 
-        for (IPieDataSet set : pieData.getDataSets()) {
-
+        IPieDataSet set;
+        int setCount = pieData.getDataSets().size();
+        List<IPieDataSet> dataSet = pieData.getDataSets();
+        for(int i = 0 ; i < setCount ; i++){
+            set = dataSet.get(i);
             if (set.isVisible() && set.getEntryCount() > 0)
                 drawDataSet(c, set);
         }
@@ -229,7 +233,7 @@ public class PieChartRenderer extends DataRenderer {
         int visibleAngleCount = 0;
         for (int j = 0; j < entryCount; j++) {
             // draw only if the value is greater than zero
-            if ((Math.abs(dataSet.getEntryForIndex(j).getY()) > Utils.FLOAT_EPSILON)) {
+            if ((Math.abs(dataSet.getEntryForIndex(j).getY()) > 0.000001)) {
                 visibleAngleCount++;
             }
         }
@@ -244,7 +248,7 @@ public class PieChartRenderer extends DataRenderer {
             Entry e = dataSet.getEntryForIndex(j);
 
             // draw only if the value is greater than zero
-            if ((Math.abs(e.getY()) > Utils.FLOAT_EPSILON)) {
+            if ((Math.abs(e.getY()) > 0.000001)) {
 
                 if (!mChart.needsHighlight(j)) {
 
@@ -263,13 +267,15 @@ public class PieChartRenderer extends DataRenderer {
 
                     mPathBuffer.reset();
 
-                    float arcStartPointX = center.x + radius * (float) Math.cos(startAngleOuter * Utils.FDEG2RAD);
-                    float arcStartPointY = center.y + radius * (float) Math.sin(startAngleOuter * Utils.FDEG2RAD);
+                    float arcStartPointX = 0.f, arcStartPointY = 0.f;
 
-                    if (sweepAngleOuter % 360f <= Utils.FLOAT_EPSILON) {
+                    if (sweepAngleOuter % 360f == 0.f) {
                         // Android is doing "mod 360"
                         mPathBuffer.addCircle(center.x, center.y, radius, Path.Direction.CW);
                     } else {
+
+                        arcStartPointX = center.x + radius * (float) Math.cos(startAngleOuter * Utils.FDEG2RAD);
+                        arcStartPointY = center.y + radius * (float) Math.sin(startAngleOuter * Utils.FDEG2RAD);
 
                         mPathBuffer.moveTo(arcStartPointX, arcStartPointY);
 
@@ -412,8 +418,6 @@ public class PieChartRenderer extends DataRenderer {
 
         c.save();
 
-        float offset = Utils.convertDpToPixel(5.f);
-
         for (int i = 0; i < dataSets.size(); i++) {
 
             IPieDataSet dataSet = dataSets.get(i);
@@ -432,12 +436,14 @@ public class PieChartRenderer extends DataRenderer {
             float lineHeight = Utils.calcTextHeight(mValuePaint, "Q")
                     + Utils.convertDpToPixel(4f);
 
-            IValueFormatter formatter = dataSet.getValueFormatter();
+            ValueFormatter formatter = dataSet.getValueFormatter();
 
             int entryCount = dataSet.getEntryCount();
 
             mValueLinePaint.setColor(dataSet.getValueLineColor());
             mValueLinePaint.setStrokeWidth(Utils.convertDpToPixel(dataSet.getValueLineWidth()));
+
+            float offset = Utils.convertDpToPixel(5.f);
 
             final float sliceSpace = getSliceSpace(dataSet);
 
@@ -507,22 +513,13 @@ public class PieChartRenderer extends DataRenderer {
                     if (transformedAngle % 360.0 >= 90.0 && transformedAngle % 360.0 <= 270.0) {
                         pt2x = pt1x - polyline2Width;
                         pt2y = pt1y;
-
                         mValuePaint.setTextAlign(Align.RIGHT);
-
-                        if(drawXOutside)
-                            mEntryLabelsPaint.setTextAlign(Align.RIGHT);
-
                         labelPtx = pt2x - offset;
                         labelPty = pt2y;
                     } else {
                         pt2x = pt1x + polyline2Width;
                         pt2y = pt1y;
                         mValuePaint.setTextAlign(Align.LEFT);
-
-                        if(drawXOutside)
-                            mEntryLabelsPaint.setTextAlign(Align.LEFT);
-
                         labelPtx = pt2x + offset;
                         labelPty = pt2y;
                     }
@@ -769,7 +766,7 @@ public class PieChartRenderer extends DataRenderer {
             int visibleAngleCount = 0;
             for (int j = 0; j < entryCount; j++) {
                 // draw only if the value is greater than zero
-                if ((Math.abs(set.getEntryForIndex(j).getY()) > Utils.FLOAT_EPSILON)) {
+                if ((Math.abs(set.getEntryForIndex(j).getY()) > 0.000001)) {
                     visibleAngleCount++;
                 }
             }
@@ -956,7 +953,7 @@ public class PieChartRenderer extends DataRenderer {
             Entry e = dataSet.getEntryForIndex(j);
 
             // draw only if the value is greater than zero
-            if ((Math.abs(e.getY()) > Utils.FLOAT_EPSILON)) {
+            if ((Math.abs(e.getY()) > 0.000001)) {
 
                 float x = (float) ((r - circleRadius)
                         * Math.cos(Math.toRadians((angle + sliceAngle)

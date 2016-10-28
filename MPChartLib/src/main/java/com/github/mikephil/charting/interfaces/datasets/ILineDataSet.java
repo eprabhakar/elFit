@@ -1,10 +1,11 @@
 package com.github.mikephil.charting.interfaces.datasets;
 
 import android.graphics.DashPathEffect;
+import android.graphics.drawable.Drawable;
 
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IFillFormatter;
+import com.github.mikephil.charting.formatter.FillFormatter;
 
 /**
  * Created by Philpp Jahoda on 21/10/15.
@@ -95,9 +96,9 @@ public interface ILineDataSet extends ILineRadarDataSet<Entry> {
     boolean isDashedLineEnabled();
 
     /**
-     * Returns the IFillFormatter that is set for this DataSet.
+     * Returns the FillFormatter that is set for this DataSet.
      *
      * @return
      */
-    IFillFormatter getFillFormatter();
+    FillFormatter getFillFormatter();
 }

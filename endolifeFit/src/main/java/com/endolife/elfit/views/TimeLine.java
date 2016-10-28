@@ -19,7 +19,8 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.AxisValueFormatter;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class TimeLine extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Log.d(TAG, "In the oncreate:");
 
-
+/*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,7 +47,7 @@ public class TimeLine extends AppCompatActivity {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         LineChart chart = (LineChart) findViewById(R.id.line_chart);
@@ -87,7 +88,7 @@ public class TimeLine extends AppCompatActivity {
 
     }
 
-    public class MyXAxisValueFormatter implements IAxisValueFormatter {
+    public class MyXAxisValueFormatter implements AxisValueFormatter {
 
         private String[] mValues;
 

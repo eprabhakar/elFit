@@ -41,10 +41,7 @@ public final class FSize extends ObjectPool.Poolable{
         pool.recycle(instances);
     }
 
-    public FSize() {
-    }
-
-    public FSize(final float width, final float height) {
+    private FSize(final float width, final float height) {
         this.width = width;
         this.height = height;
     }
@@ -76,4 +73,5 @@ public final class FSize extends ObjectPool.Poolable{
     public int hashCode() {
         return Float.floatToIntBits(width) ^ Float.floatToIntBits(height);
     }
+
 }

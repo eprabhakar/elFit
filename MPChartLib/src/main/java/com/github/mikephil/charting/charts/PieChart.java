@@ -4,6 +4,7 @@ package com.github.mikephil.charting.charts;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
@@ -209,17 +210,17 @@ public class PieChart extends PieRadarChartBase<PieData> {
 
         int entryCount = mData.getEntryCount();
 
-        if (mDrawAngles.length != entryCount) {
+        if(mDrawAngles.length != entryCount) {
             mDrawAngles = new float[entryCount];
-        } else {
-            for (int i = 0; i < entryCount; i++) {
+        }else{
+            for(int i = 0 ; i < entryCount ; i++){
                 mDrawAngles[i] = 0;
             }
         }
-        if (mAbsoluteAngles.length != entryCount) {
+        if(mAbsoluteAngles.length != entryCount) {
             mAbsoluteAngles = new float[entryCount];
-        } else {
-            for (int i = 0; i < entryCount; i++) {
+        }else{
+            for(int i = 0 ; i < entryCount ; i++){
                 mAbsoluteAngles[i] = 0;
             }
         }
@@ -328,7 +329,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
         List<IPieDataSet> dataSets = mData.getDataSets();
 
         for (int i = 0; i < dataSets.size(); i++) {
-            if (dataSets.get(i).getEntryForXValue(xIndex) != null)
+            if (dataSets.get(i).getEntryForXPos(xIndex) != null)
                 return i;
         }
 
@@ -662,7 +663,7 @@ public class PieChart extends PieRadarChartBase<PieData> {
 
     /**
      * If this is enabled, values inside the PieChart are drawn in percent and
-     * not with their original value. Values provided for the IValueFormatter to
+     * not with their original value. Values provided for the ValueFormatter to
      * format are then provided in percent.
      *
      * @param enabled

@@ -144,7 +144,7 @@ public class HorizontalBarChart extends BarChart {
         RectF bounds = outputRect;
         IBarDataSet set = mData.getDataSetForEntry(e);
 
-        if (set == null) {
+        if (set == null){
             outputRect.set(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
             return;
         }
@@ -166,7 +166,6 @@ public class HorizontalBarChart extends BarChart {
     }
 
     protected float[] mGetPositionBuffer = new float[2];
-
     /**
      * Returns a recyclable MPPointF instance.
      *
@@ -249,20 +248,20 @@ public class HorizontalBarChart extends BarChart {
 
     @Override
     public void setVisibleYRangeMaximum(float maxYRange, AxisDependency axis) {
-        float yScale = getAxisRange(axis) / maxYRange;
+        float yScale = getDeltaY(axis) / maxYRange;
         mViewPortHandler.setMinimumScaleX(yScale);
     }
 
     @Override
     public void setVisibleYRangeMinimum(float minYRange, AxisDependency axis) {
-        float yScale = getAxisRange(axis) / minYRange;
+        float yScale = getDeltaY(axis) / minYRange;
         mViewPortHandler.setMaximumScaleX(yScale);
     }
 
     @Override
     public void setVisibleYRange(float minYRange, float maxYRange, AxisDependency axis) {
-        float minScale = getAxisRange(axis) / minYRange;
-        float maxScale = getAxisRange(axis) / maxYRange;
+        float minScale = getDeltaY(axis) / minYRange;
+        float maxScale = getDeltaY(axis) / maxYRange;
         mViewPortHandler.setMinMaxScaleX(minScale, maxScale);
     }
 }

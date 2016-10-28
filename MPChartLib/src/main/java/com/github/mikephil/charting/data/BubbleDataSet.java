@@ -29,13 +29,25 @@ public class BubbleDataSet extends BarLineScatterCandleBubbleDataSet<BubbleEntry
     }
 
     @Override
-    protected void calcMinMax(BubbleEntry e) {
-        super.calcMinMax(e);
+    public void calcMinMax() {
 
-        final float size = e.getSize();
+        if (mValues == null || mValues.isEmpty())
+            return;
 
-        if (size > mMaxSize) {
-            mMaxSize = size;
+        mYMax = -Float.MAX_VALUE;
+        mYMin = Float.MAX_VALUE;
+        mXMax = -Float.MAX_VALUE;
+        mXMin = Float.MAX_VALUE;
+
+        for (BubbleEntry e : mValues) {
+
+            calcMinMax(e);
+
+            final float size = e.getSize();
+
+            if (size > mMaxSize) {
+                mMaxSize = size;
+            }
         }
     }
 

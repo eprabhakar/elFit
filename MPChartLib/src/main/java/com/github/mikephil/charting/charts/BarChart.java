@@ -62,6 +62,9 @@ public class BarChart extends BarLineChartBase<BarData> implements BarDataProvid
     @Override
     protected void calcMinMax() {
 
+        if (mAutoScaleMinMaxEnabled)
+            mData.calcMinMax();
+
         if (mFitBars) {
             mXAxis.calculate(mData.getXMin() - mData.getBarWidth() / 2f, mData.getXMax() + mData.getBarWidth() / 2f);
         } else {
@@ -115,7 +118,7 @@ public class BarChart extends BarLineChartBase<BarData> implements BarDataProvid
      * @param e
      * @return
      */
-    public void getBarBounds(BarEntry e, RectF outputRect) {
+    public void getBarBounds(BarEntry e, RectF outputRect){
 
         RectF bounds = outputRect;
 
@@ -199,7 +202,7 @@ public class BarChart extends BarLineChartBase<BarData> implements BarDataProvid
     }
 
     /**
-     * Highlights the value at the given x-value in the given DataSet. Provide
+     * Highlights the value at the given x-position in the given DataSet. Provide
      * -1 as the dataSetIndex to undo all highlighting.
      *
      * @param x
@@ -227,8 +230,8 @@ public class BarChart extends BarLineChartBase<BarData> implements BarDataProvid
     }
 
     /**
-     * Groups all BarDataSet objects this data object holds together by modifying the x-value of their entries.
-     * Previously set x-values of entries will be overwritten. Leaves space between bars and groups as specified
+     * Groups all BarDataSet objects this data object holds together by modifying the x-position of their entries.
+     * Previously set x-positions of entries will be overwritten. Leaves space between bars and groups as specified
      * by the parameters.
      * Calls notifyDataSetChanged() afterwards.
      *

@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
@@ -63,9 +64,13 @@ public class RadarChartRenderer extends LineRadarRenderer {
 
         int mostEntries = radarData.getMaxEntryCountSet().getEntryCount();
 
-        for (IRadarDataSet set : radarData.getDataSets()) {
+        IRadarDataSet set;
+        List<IRadarDataSet> dataSets = radarData.getDataSets();
+        int setCount = dataSets.size();
+        for(int i = 0 ; i < setCount ; i++){
+            set = dataSets.get(i);
 
-            if (set.isVisible()) {
+            if (set.isVisible() && set.getEntryCount() > 0) {
                 drawDataSet(c, set, mostEntries);
             }
         }
@@ -169,7 +174,7 @@ public class RadarChartRenderer extends LineRadarRenderer {
 
             IRadarDataSet dataSet = mChart.getData().getDataSetByIndex(i);
 
-            if (!shouldDrawValues(dataSet))
+            if (!dataSet.isDrawValuesEnabled() || dataSet.getEntryCount() == 0)
                 continue;
 
             // apply the text-styling defined by the DataSet

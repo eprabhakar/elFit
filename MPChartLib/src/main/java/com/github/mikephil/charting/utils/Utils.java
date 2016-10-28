@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
 import android.text.Layout;
@@ -17,9 +18,6 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
-
-import com.github.mikephil.charting.formatter.DefaultValueFormatter;
-import com.github.mikephil.charting.formatter.IValueFormatter;
 
 import java.util.List;
 
@@ -38,12 +36,6 @@ public abstract class Utils {
     private static int mMaximumFlingVelocity = 8000;
     public final static double DEG2RAD = (Math.PI / 180.0);
     public final static float FDEG2RAD = ((float) Math.PI / 180.f);
-
-    @SuppressWarnings("unused")
-    public final static double DOUBLE_EPSILON = Double.longBitsToDouble(Double.doubleToLongBits(1.0) + 1);
-
-    @SuppressWarnings("unused")
-    public final static float FLOAT_EPSILON = Float.intBitsToFloat(Float.floatToIntBits(1f) + 1);
 
     /**
      * initialize method, called inside the Chart.init() method.
@@ -172,10 +164,9 @@ public abstract class Utils {
         return r.height();
     }
 
-    private static Paint.FontMetrics mFontMetrics = new Paint.FontMetrics();
-
     public static float getLineHeight(Paint paint) {
-        return getLineHeight(paint, mFontMetrics);
+        Paint.FontMetrics metrics = new Paint.FontMetrics();
+        return getLineHeight(paint, metrics);
     }
 
     public static float getLineHeight(Paint paint, Paint.FontMetrics fontMetrics){
@@ -184,7 +175,8 @@ public abstract class Utils {
     }
 
     public static float getLineSpacing(Paint paint) {
-        return getLineSpacing(paint, mFontMetrics);
+        Paint.FontMetrics metrics = new Paint.FontMetrics();
+        return getLineSpacing(paint, metrics);
     }
 
     public static float getLineSpacing(Paint paint, Paint.FontMetrics fontMetrics){
@@ -235,19 +227,6 @@ public abstract class Utils {
     private static final int POW_10[] = {
             1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000
     };
-
-    private static IValueFormatter mDefaultValueFormatter = generateDefaultValueFormatter();
-
-    private static IValueFormatter generateDefaultValueFormatter() {
-        final DefaultValueFormatter formatter = new DefaultValueFormatter(1);
-        return formatter;
-    }
-
-    /// - returns: The default value formatter used for all chart components that needs a default
-    public static IValueFormatter getDefaultValueFormatter()
-    {
-        return mDefaultValueFormatter;
-    }
 
     /**
      * Formats the given number to the given number of decimals, and returns the
@@ -748,5 +727,31 @@ public abstract class Utils {
 
     public static int getSDKInt() {
         return android.os.Build.VERSION.SDK_INT;
+    }
+
+    /**
+     * Calculates the granularity (minimum axis interval) based on axis range and labelcount.
+     * Default granularity is 1/10th of interval.
+     *
+     * @param range
+     * @param labelCount
+     * @return
+     */
+    public static double granularity(float range, int labelCount) {
+
+        // Find out how much spacing (in y value space) between axis values
+        double rawInterval = range / labelCount;
+        double interval = Utils.roundToNextSignificant(rawInterval);
+
+        // Normalize interval
+        double intervalMagnitude = Utils.roundToNextSignificant(Math.pow(10, (int) Math.log10
+                (interval)));
+        int intervalSigDigit = (int) (interval / intervalMagnitude);
+
+        if (intervalSigDigit > 5) {
+            interval = Math.floor(10 * intervalMagnitude);
+        }
+
+        return interval * 0.1; // granularity is 1/10th of interval
     }
 }

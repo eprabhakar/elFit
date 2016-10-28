@@ -2,7 +2,9 @@
 package com.github.mikephil.charting.utils;
 
 import android.graphics.Matrix;
+import android.graphics.PointF;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -196,11 +198,11 @@ public class ViewPortHandler {
     public Matrix zoomIn(float x, float y) {
 
         Matrix save = new Matrix();
-        zoomIn(x, y, save);
+        zoomIn(x,y,save);
         return save;
     }
 
-    public void zoomIn(float x, float y, Matrix outputMatrix) {
+    public void zoomIn(float x, float y, Matrix outputMatrix){
         outputMatrix.reset();
         outputMatrix.set(mMatrixTouch);
         outputMatrix.postScale(1.4f, 1.4f, x, y);
@@ -213,11 +215,11 @@ public class ViewPortHandler {
     public Matrix zoomOut(float x, float y) {
 
         Matrix save = new Matrix();
-        zoomOut(x, y, save);
+        zoomOut(x,y,save);
         return save;
     }
 
-    public void zoomOut(float x, float y, Matrix outputMatrix) {
+    public void zoomOut(float x, float y, Matrix outputMatrix){
         outputMatrix.reset();
         outputMatrix.set(mMatrixTouch);
         outputMatrix.postScale(0.7f, 0.7f, x, y);
@@ -233,11 +235,11 @@ public class ViewPortHandler {
     public Matrix zoom(float scaleX, float scaleY) {
 
         Matrix save = new Matrix();
-        zoom(scaleX, scaleY, save);
+        zoom(scaleX,scaleY,save);
         return save;
     }
 
-    public void zoom(float scaleX, float scaleY, Matrix outputMatrix) {
+    public void zoom(float scaleX, float scaleY, Matrix outputMatrix){
         outputMatrix.reset();
         outputMatrix.set(mMatrixTouch);
         outputMatrix.postScale(scaleX, scaleY);
@@ -255,14 +257,14 @@ public class ViewPortHandler {
     public Matrix zoom(float scaleX, float scaleY, float x, float y) {
 
         Matrix save = new Matrix();
-        zoom(scaleX, scaleY, x, y, save);
+        zoom(scaleX,scaleY,x,y,save);
         return save;
     }
 
-    public void zoom(float scaleX, float scaleY, float x, float y, Matrix outputMatrix) {
+    public void zoom(float scaleX, float scaleY, float x, float y, Matrix outputMatrix){
         outputMatrix.reset();
         outputMatrix.set(mMatrixTouch);
-        outputMatrix.postScale(scaleX, scaleY, x, y);
+        outputMatrix.postScale(scaleX,scaleY,x,y);
     }
 
     /**
@@ -275,14 +277,14 @@ public class ViewPortHandler {
     public Matrix setZoom(float scaleX, float scaleY) {
 
         Matrix save = new Matrix();
-        setZoom(scaleX, scaleY, save);
+        setZoom(scaleX,scaleY,save);
         return save;
     }
 
-    public void setZoom(float scaleX, float scaleY, Matrix outputMatrix) {
+    public void setZoom(float scaleX, float scaleY, Matrix outputMatrix){
         outputMatrix.reset();
         outputMatrix.set(mMatrixTouch);
-        outputMatrix.setScale(scaleX, scaleY);
+        outputMatrix.setScale(scaleX,scaleY);
     }
 
     /**
@@ -321,14 +323,14 @@ public class ViewPortHandler {
      * Resets all zooming and dragging and makes the chart fit exactly it's
      * bounds.  Output Matrix is available for those who wish to cache the object.
      */
-    public void fitScreen(Matrix outputMatrix) {
+    public void fitScreen(Matrix outputMatrix){
         mMinScaleX = 1f;
         mMinScaleY = 1f;
 
         outputMatrix.set(mMatrixTouch);
 
         float[] vals = valsBufferForFitScreen;
-        for (int i = 0; i < 9; i++) {
+        for(int i = 0 ; i < 9 ; i++){
             vals[i] = 0;
         }
 
@@ -362,7 +364,7 @@ public class ViewPortHandler {
      * @param transformedPts
      * @return
      */
-    public void translate(final float[] transformedPts, Matrix outputMatrix) {
+    public void translate(final float[] transformedPts, Matrix outputMatrix){
         outputMatrix.reset();
         outputMatrix.set(mMatrixTouch);
         final float x = transformedPts[0] - offsetLeft();
@@ -371,7 +373,6 @@ public class ViewPortHandler {
     }
 
     protected Matrix mCenterViewPortMatrixBuffer = new Matrix();
-
     /**
      * Centers the viewport around the specified position (x-index and y-value)
      * in the chart. Centering the viewport outside the bounds of the chart is
@@ -576,33 +577,42 @@ public class ViewPortHandler {
      */
 
     public boolean isInBoundsX(float x) {
-        return isInBoundsLeft(x) && isInBoundsRight(x);
+        if (isInBoundsLeft(x) && isInBoundsRight(x))
+            return true;
+        else
+            return false;
     }
 
     public boolean isInBoundsY(float y) {
-        return isInBoundsTop(y) && isInBoundsBottom(y);
+        if (isInBoundsTop(y) && isInBoundsBottom(y))
+            return true;
+        else
+            return false;
     }
 
     public boolean isInBounds(float x, float y) {
-        return isInBoundsX(x) && isInBoundsY(y);
+        if (isInBoundsX(x) && isInBoundsY(y))
+            return true;
+        else
+            return false;
     }
 
     public boolean isInBoundsLeft(float x) {
-        return mContentRect.left <= x + 1;
+        return mContentRect.left <= x + 1 ? true : false;
     }
 
     public boolean isInBoundsRight(float x) {
         x = (float) ((int) (x * 100.f)) / 100.f;
-        return mContentRect.right >= x - 1;
+        return mContentRect.right >= x - 1 ? true : false;
     }
 
     public boolean isInBoundsTop(float y) {
-        return mContentRect.top <= y;
+        return mContentRect.top <= y ? true : false;
     }
 
     public boolean isInBoundsBottom(float y) {
         y = (float) ((int) (y * 100.f)) / 100.f;
-        return mContentRect.bottom >= y;
+        return mContentRect.bottom >= y ? true : false;
     }
 
     /**
@@ -660,7 +670,10 @@ public class ViewPortHandler {
      */
     public boolean isFullyZoomedOut() {
 
-        return isFullyZoomedOutX() && isFullyZoomedOutY();
+        if (isFullyZoomedOutX() && isFullyZoomedOutY())
+            return true;
+        else
+            return false;
     }
 
     /**
@@ -669,7 +682,10 @@ public class ViewPortHandler {
      * @return
      */
     public boolean isFullyZoomedOutY() {
-        return !(mScaleY > mMinScaleY || mMinScaleY > 1f);
+        if (mScaleY > mMinScaleY || mMinScaleY > 1f)
+            return false;
+        else
+            return true;
     }
 
     /**
@@ -679,7 +695,10 @@ public class ViewPortHandler {
      * @return
      */
     public boolean isFullyZoomedOutX() {
-        return !(mScaleX > mMinScaleX || mMinScaleX > 1f);
+        if (mScaleX > mMinScaleX || mMinScaleX > 1f)
+            return false;
+        else
+            return true;
     }
 
     /**
@@ -717,7 +736,7 @@ public class ViewPortHandler {
      * @return
      */
     public boolean canZoomOutMoreX() {
-        return mScaleX > mMinScaleX;
+        return (mScaleX > mMinScaleX);
     }
 
     /**
@@ -726,7 +745,7 @@ public class ViewPortHandler {
      * @return
      */
     public boolean canZoomInMoreX() {
-        return mScaleX < mMaxScaleX;
+        return (mScaleX < mMaxScaleX);
     }
 
     /**
@@ -735,7 +754,7 @@ public class ViewPortHandler {
      * @return
      */
     public boolean canZoomOutMoreY() {
-        return mScaleY > mMinScaleY;
+        return (mScaleY > mMinScaleY);
     }
 
     /**
@@ -744,6 +763,6 @@ public class ViewPortHandler {
      * @return
      */
     public boolean canZoomInMoreY() {
-        return mScaleY < mMaxScaleY;
+        return (mScaleY < mMaxScaleY);
     }
 }

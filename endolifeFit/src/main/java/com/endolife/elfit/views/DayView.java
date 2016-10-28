@@ -24,7 +24,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.AxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.MPPointF;
@@ -51,7 +51,7 @@ public class DayView extends AppCompatActivity implements  HourChart.OnFragmentI
         setContentView(R.layout.activity_day_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+/*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,7 +59,7 @@ public class DayView extends AppCompatActivity implements  HourChart.OnFragmentI
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (findViewById(R.id.content_day_view) != null) {
@@ -160,7 +160,7 @@ public class DayView extends AppCompatActivity implements  HourChart.OnFragmentI
     }
 
 
-    public class MyXAxisValueFormatter implements IAxisValueFormatter {
+    public class MyXAxisValueFormatter implements AxisValueFormatter {
 
         private String[] mValues;
 

@@ -18,12 +18,11 @@ public class ZoomJob extends ViewPortJob {
     private static ObjectPool<ZoomJob> pool;
 
     static {
-        pool = ObjectPool.create(1, new ZoomJob(null, 0, 0, 0, 0, null, null, null));
+        pool = ObjectPool.create(1, new ZoomJob(null,0,0,0,0,null,null,null));
         pool.setReplenishPercentage(0.5f);
     }
 
-    public static ZoomJob getInstance(ViewPortHandler viewPortHandler, float scaleX, float scaleY, float xValue, float yValue,
-                                      Transformer trans, YAxis.AxisDependency axis, View v) {
+    public static ZoomJob getInstance(ViewPortHandler viewPortHandler, float scaleX, float scaleY, float xValue, float yValue, Transformer trans, YAxis.AxisDependency axis, View v) {
         ZoomJob result = pool.get();
         result.xValue = xValue;
         result.yValue = yValue;
@@ -36,7 +35,7 @@ public class ZoomJob extends ViewPortJob {
         return result;
     }
 
-    public static void recycleInstance(ZoomJob instance) {
+    public static void recycleInstance(ZoomJob instance){
         pool.recycle(instance);
     }
 
@@ -45,8 +44,7 @@ public class ZoomJob extends ViewPortJob {
 
     protected YAxis.AxisDependency axisDependency;
 
-    public ZoomJob(ViewPortHandler viewPortHandler, float scaleX, float scaleY, float xValue, float yValue, Transformer trans,
-                   YAxis.AxisDependency axis, View v) {
+    public ZoomJob(ViewPortHandler viewPortHandler, float scaleX, float scaleY, float xValue, float yValue, Transformer trans, YAxis.AxisDependency axis, View v) {
         super(viewPortHandler, xValue, yValue, trans, v);
 
         this.scaleX = scaleX;
@@ -55,7 +53,6 @@ public class ZoomJob extends ViewPortJob {
     }
 
     protected Matrix mRunMatrixBuffer = new Matrix();
-
     @Override
     public void run() {
 
@@ -63,11 +60,11 @@ public class ZoomJob extends ViewPortJob {
         mViewPortHandler.zoom(scaleX, scaleY, save);
         mViewPortHandler.refresh(save, view, false);
 
-        float yValsInView = ((BarLineChartBase) view).getAxis(axisDependency).mAxisRange / mViewPortHandler.getScaleY();
-        float xValsInView = ((BarLineChartBase) view).getXAxis().mAxisRange / mViewPortHandler.getScaleX();
+        float valsInView = ((BarLineChartBase) view).getDeltaY(axisDependency) / mViewPortHandler.getScaleY();
+        float xsInView =  ((BarLineChartBase) view).getXAxis().mAxisRange / mViewPortHandler.getScaleX();
 
-        pts[0] = xValue - xValsInView / 2f;
-        pts[1] = yValue + yValsInView / 2f;
+        pts[0] = xValue - xsInView / 2f;
+        pts[1] = yValue + valsInView / 2f;
 
         mTrans.pointValuesToPixel(pts);
 
@@ -82,6 +79,6 @@ public class ZoomJob extends ViewPortJob {
 
     @Override
     protected ObjectPool.Poolable instantiate() {
-        return new ZoomJob(null, 0, 0, 0, 0, null, null, null);
+        return new ZoomJob(null,0,0,0,0,null,null,null);
     }
 }

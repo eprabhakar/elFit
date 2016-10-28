@@ -34,7 +34,7 @@ public class StepsCounterActivity extends AppCompatActivity implements SensorEve
         setContentView(R.layout.activity_steps_counter);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+/*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,7 +42,7 @@ public class StepsCounterActivity extends AppCompatActivity implements SensorEve
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 

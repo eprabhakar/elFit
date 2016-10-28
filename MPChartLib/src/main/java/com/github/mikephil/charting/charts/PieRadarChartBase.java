@@ -6,6 +6,7 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -16,6 +17,7 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.ChartData;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import com.github.mikephil.charting.listener.PieRadarChartTouchListener;
 import com.github.mikephil.charting.utils.MPPointF;
@@ -115,7 +117,8 @@ public abstract class PieRadarChartBase<T extends ChartData<? extends IDataSet<?
         if (mLegend != null && mLegend.isEnabled() && !mLegend.isDrawInsideEnabled()) {
 
             float fullLegendWidth = Math.min(mLegend.mNeededWidth,
-                    mViewPortHandler.getChartWidth() * mLegend.getMaxSizePercent());
+                    mViewPortHandler.getChartWidth() * mLegend.getMaxSizePercent()) +
+                    mLegend.getFormSize() + mLegend.getFormToTextSpace();
 
             switch (mLegend.getOrientation()) {
                 case VERTICAL: {
@@ -294,12 +297,12 @@ public abstract class PieRadarChartBase<T extends ChartData<? extends IDataSet<?
      */
     public MPPointF getPosition(MPPointF center, float dist, float angle) {
 
-        MPPointF p = MPPointF.getInstance(0, 0);
+        MPPointF p = MPPointF.getInstance(0,0);
         getPosition(center, dist, angle, p);
         return p;
     }
 
-    public void getPosition(MPPointF center, float dist, float angle, MPPointF outputPoint) {
+    public void getPosition(MPPointF center, float dist, float angle, MPPointF outputPoint){
         outputPoint.x = (float) (center.x + dist * Math.cos(Math.toRadians(angle)));
         outputPoint.y = (float) (center.y + dist * Math.sin(Math.toRadians(angle)));
     }

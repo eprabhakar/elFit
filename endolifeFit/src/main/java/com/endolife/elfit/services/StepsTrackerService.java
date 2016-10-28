@@ -39,6 +39,8 @@ public class StepsTrackerService extends Service {
     private AccelerometerListener mAccelerometerListener;
     private StepDetectorListener mStepDetectorListener;
     private StepsTrackerDBHelper mStepsTrackerDBHelper;
+    private SimpleDateFormat formatter;
+
 
     private static final int WALKINGPEAK = 16;
     private static final int JOGGINGPEAK = 23;
@@ -50,16 +52,6 @@ public class StepsTrackerService extends Service {
 
 
     private void startAccelerometer(){
-        SimpleDateFormat formatter = new SimpleDateFormat("HH");
-        String timezoneID = TimeZone.getDefault().getID();
-        formatter.setTimeZone(TimeZone.getTimeZone(timezoneID));
-
-        Date date = Calendar.getInstance().getTime();
-        sessionId = formatter.format(date);
-
-        Log.d(TAG, "session ID: " + sessionId);
-        Log.d(TAG, "current timezone: " + timezoneID + " : "+ TimeZone.getTimeZone(timezoneID));
-
         mAccelerometerSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mAccelerometerListener = new AccelerometerListener();
         mSensorManager.registerListener(mAccelerometerListener, mAccelerometerSensor, SensorManager.SENSOR_DELAY_FASTEST);
@@ -68,18 +60,18 @@ public class StepsTrackerService extends Service {
     }
 
 
+    private String getCurrentSessionId(){
+        Date date = Calendar.getInstance().getTime();
+        String sessionId = formatter.format(date);
+
+        Log.d(TAG, "session ID: " + sessionId);
+        return sessionId;
+    }
+
+
     @Override
     public void onCreate() {
         super.onCreate();
-        SimpleDateFormat formatter = new SimpleDateFormat("HH");
-        String timezoneID = TimeZone.getDefault().getID();
-        formatter.setTimeZone(TimeZone.getTimeZone(timezoneID));
-
-        Date date = Calendar.getInstance().getTime();
-        sessionId = formatter.format(date);
-
-        Log.d(TAG, "session ID: " + sessionId);
-        Log.d(TAG, "current timezone: " + timezoneID + " : "+ TimeZone.getTimeZone(timezoneID));
 
         mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         if(mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR) != null)
@@ -98,18 +90,21 @@ public class StepsTrackerService extends Service {
 
         }
 
+        formatter = new SimpleDateFormat("HH");
+        String timezoneID = TimeZone.getDefault().getID();
+        formatter.setTimeZone(TimeZone.getTimeZone(timezoneID));
+        Log.d(TAG, " On create called: " + timezoneID.toString());
         mStepsTrackerDBHelper = new StepsTrackerDBHelper(this);
     }
 
 
-    ScheduledExecutorService mScheduledExecutorService = Executors.newScheduledThreadPool(3);
+    ScheduledExecutorService mScheduledExecutorService = Executors.newScheduledThreadPool(2);
     private ScheduledFuture mScheduledUnregisterAccelerometerTask;
     private ScheduledFuture mScheduledProcessDataTask;
-    private ScheduledFuture mScheduledSessionTimerTask;
     private UnregisterAcceleromterTask mUnregisterAcceleromterTask;
     //private RegisterAccelerometerTask mRegisterAccelerometerTask;
     private ProcessDataTask mProcessDataTask;
-    private SessionTimerTask mSessionTimerTask;
+    //private SessionTimerTask mSessionTimerTask;
     private boolean isScheduleUnregistered = false;
     private boolean isAccelerometerRegistered = false;
     private String sessionId;
@@ -125,16 +120,6 @@ public class StepsTrackerService extends Service {
                 Log.d(TAG, "about to register a new Accelerometer sensor listner");
                 mAccelerometerListener = new AccelerometerListener();
                 mSensorManager.registerListener(mAccelerometerListener, mAccelerometerSensor, SensorManager.SENSOR_DELAY_FASTEST);
-
-                SimpleDateFormat formatter = new SimpleDateFormat("HH");
-                String timezoneID = TimeZone.getDefault().getID();
-                formatter.setTimeZone(TimeZone.getTimeZone(timezoneID));
-
-                Date date = Calendar.getInstance().getTime();
-                sessionId = formatter.format(date);
-
-
-                Log.d(TAG, "session ID: " + sessionId);
                 isAccelerometerRegistered = true;
             }
             if(isScheduleUnregistered)
@@ -189,8 +174,8 @@ public class StepsTrackerService extends Service {
             Log.d(TAG, "Finished new Accelerometer sensor listner");
             mProcessDataTask = new ProcessDataTask();
             mScheduledProcessDataTask = mScheduledExecutorService.scheduleWithFixedDelay(mProcessDataTask, 10000, 10000, TimeUnit.MILLISECONDS);
-            mSessionTimerTask = new SessionTimerTask();
-            mScheduledSessionTimerTask = mScheduledExecutorService.scheduleWithFixedDelay(mSessionTimerTask, 3600000, 3600000, TimeUnit.MILLISECONDS);
+            //mSessionTimerTask = new SessionTimerTask();
+            //mScheduledSessionTimerTask = mScheduledExecutorService.scheduleWithFixedDelay(mSessionTimerTask, 3600000, 3600000, TimeUnit.MILLISECONDS);
 
         }
 
@@ -210,22 +195,6 @@ public class StepsTrackerService extends Service {
 
         }
 
-    }
-
-    class SessionTimerTask implements Runnable {
-        @Override
-        public void run() {
-
-            SimpleDateFormat formatter = new SimpleDateFormat("HH");
-            String timezoneID = TimeZone.getDefault().getID();
-            formatter.setTimeZone(TimeZone.getTimeZone(timezoneID));
-
-            Date date = Calendar.getInstance().getTime();
-            sessionId = formatter.format(date);
-
-            Log.d(TAG, "session ID: " + sessionId);
-
-        }
     }
 
     class ProcessDataTask implements Runnable {
@@ -309,23 +278,24 @@ public class StepsTrackerService extends Service {
         {
 
             int size = mHighestPeakList.size();
+            String sessionId = getCurrentSessionId();
             for (int i = 0; i < size; i++)
             {
                 if(mHighestPeakList.get(i).isRealPeak)
                 {
                     if(mHighestPeakList.get(i).value > RUNNINGPEAK)
                     {
-                        mStepsTrackerDBHelper.createStepsEntry(mHighestPeakList.get(i).time, RUNNING, sessionId);
+                        mStepsTrackerDBHelper.createStepsEntry(mHighestPeakList.get(i).time, RUNNING,sessionId);
                     }
                     else
                     {
                         if(mHighestPeakList.get(i).value > JOGGINGPEAK)
                         {
-                            mStepsTrackerDBHelper.createStepsEntry(mHighestPeakList.get(i).time, JOGGING, sessionId);
+                            mStepsTrackerDBHelper.createStepsEntry(mHighestPeakList.get(i).time, JOGGING,sessionId);
                         }
                         else
                         {
-                            mStepsTrackerDBHelper.createStepsEntry(mHighestPeakList.get(i).time, WALKING, sessionId);
+                            mStepsTrackerDBHelper.createStepsEntry(mHighestPeakList.get(i).time, WALKING,sessionId);
                         }
                     }
                 }

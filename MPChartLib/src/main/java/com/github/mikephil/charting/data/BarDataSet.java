@@ -107,27 +107,42 @@ public class BarDataSet extends BarLineScatterCandleBubbleDataSet<BarEntry> impl
     }
 
     @Override
-    protected void calcMinMax(BarEntry e) {
+    public void calcMinMax() {
 
-        if (e != null && !Float.isNaN(e.getY())) {
+        if (mValues == null || mValues.isEmpty())
+            return;
 
-            if (e.getYVals() == null) {
+        mYMax = -Float.MAX_VALUE;
+        mYMin = Float.MAX_VALUE;
+        mXMax = -Float.MAX_VALUE;
+        mXMin = Float.MAX_VALUE;
 
-                if (e.getY() < mYMin)
-                    mYMin = e.getY();
+        for (BarEntry e : mValues) {
 
-                if (e.getY() > mYMax)
-                    mYMax = e.getY();
-            } else {
+            if (e != null && !Float.isNaN(e.getY())) {
 
-                if (-e.getNegativeSum() < mYMin)
-                    mYMin = -e.getNegativeSum();
+                if (e.getYVals() == null) {
 
-                if (e.getPositiveSum() > mYMax)
-                    mYMax = e.getPositiveSum();
+                    if (e.getY() < mYMin)
+                        mYMin = e.getY();
+
+                    if (e.getY() > mYMax)
+                        mYMax = e.getY();
+                } else {
+
+                    if (-e.getNegativeSum() < mYMin)
+                        mYMin = -e.getNegativeSum();
+
+                    if (e.getPositiveSum() > mYMax)
+                        mYMax = e.getPositiveSum();
+                }
+
+                if (e.getX() < mXMin)
+                    mXMin = e.getX();
+
+                if (e.getX() > mXMax)
+                    mXMax = e.getX();
             }
-
-            calcMinMaxX(e);
         }
     }
 

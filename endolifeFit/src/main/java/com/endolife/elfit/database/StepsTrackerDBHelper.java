@@ -36,7 +36,6 @@ public class StepsTrackerDBHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "StepsDBTrackerActivity";
 
-
     private static final String CREATE_TABLE_STEPS_SUMMARY = "CREATE TABLE "
             + TABLE_STEPS_SUMMARY + "(" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + STEP_DATE + " TEXT,"+ T0DAY_NO+ " INTEGER," + SESSION_ID + " TEXT,"+ STEP_TIME + " INTEGER," +  STEP_TYPE + " TEXT"+")";
 
@@ -51,24 +50,9 @@ public class StepsTrackerDBHelper extends SQLiteOpenHelper {
         mCalendar.setTimeZone(timezone);
 
 
-        /*
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
-
-
-        SimpleDateFormat dayFormatter = new SimpleDateFormat("ddd");
-
-        String timezoneID = TimeZone.getDefault().getID();
-        dateFormatter.setTimeZone(TimeZone.getTimeZone(timezoneID));
-        Date mCalendar = Calendar.getInstance().getTime();
-        String todayDate = dateFormatter.format(mCalendar);
-        Log.d(TAG, "today formatted date: " + todayDate);
-
-        */
-
         String todayDate = String.valueOf(mCalendar.get(Calendar.MONTH)+1)+"/" + String.valueOf(mCalendar.get(Calendar.DAY_OF_MONTH))+"/"+String.valueOf(mCalendar.get(Calendar.YEAR));
         int todayNumber =mCalendar.get(mCalendar.DAY_OF_YEAR);
-        //dayFormatter.setTimeZone(TimeZone.getTimeZone(timezoneID));
-        //int todayNumber = dayFormatter.format(mCalendar);
+
         Log.d(TAG, "Today number: " + todayNumber + " Today Date: " + todayDate + " TimeZone: " + timezone);
 
         try {
@@ -314,6 +298,14 @@ public class StepsTrackerDBHelper extends SQLiteOpenHelper {
             SQLiteDatabase db = this.getReadableDatabase();
             Cursor c = db.rawQuery(selectQuery, null);
             Log.d(TAG, "count of sessions: " + c.getCount());
+            if(c.getCount() == 0){
+                //Add a new empty barchart entry and return
+                BarChartTimeEntry barChartTimeEntry = new BarChartTimeEntry();
+                barChartTimeEntry.sessionId = "";
+                barChartTimeEntry.timeDuration = 0f;
+                barChartTimeEntries.add(barChartTimeEntry);
+                return barChartTimeEntries;
+            }
             if (c.moveToFirst()) {
                 do {
                     Log.d(TAG, "session: " + c.getString((c.getColumnIndex(SESSION_ID))));
@@ -434,6 +426,12 @@ public class StepsTrackerDBHelper extends SQLiteOpenHelper {
         Log.d(TAG, "onCreate called:");
         db.execSQL(CREATE_TABLE_STEPS_SUMMARY);
 
+    }
+
+    //@Override
+    public void onResume(){
+        Log.d(TAG, "On resume called, we may use this for setting Time formatter if constructor is not called");
+        //super.onResume();
     }
 
     public ArrayList<DateStepsModel> readStepsEntries() {

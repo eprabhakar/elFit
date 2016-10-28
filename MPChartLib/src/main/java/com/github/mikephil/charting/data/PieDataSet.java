@@ -45,15 +45,6 @@ public class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
         return copied;
     }
 
-    @Override
-    protected void calcMinMax(PieEntry e) {
-
-        if (e == null)
-            return;
-
-        calcMinMaxY(e);
-    }
-
     /**
      * Sets the space that is left out between the piechart-slices in dp.
      * Default: 0 --> no space, maximum 20f

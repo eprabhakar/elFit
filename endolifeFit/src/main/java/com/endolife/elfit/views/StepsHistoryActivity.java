@@ -43,7 +43,7 @@ public class StepsHistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_steps_history);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+/*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,7 +51,7 @@ public class StepsHistoryActivity extends AppCompatActivity {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mStepsListView = (RecyclerView)findViewById(R.id.steps_list);

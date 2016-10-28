@@ -13,8 +13,7 @@ import java.util.List;
 /**
  * Created by Philipp Jahoda on 12/09/15.
  */
-public class CombinedHighlighter extends ChartHighlighter<CombinedDataProvider> implements IHighlighter
-{
+public class CombinedHighlighter extends ChartHighlighter<CombinedDataProvider> implements Highlighter {
 
     /**
      * bar highlighter for supporting stacked highlighting
@@ -29,7 +28,7 @@ public class CombinedHighlighter extends ChartHighlighter<CombinedDataProvider> 
     }
 
     @Override
-    protected List<Highlight> getHighlightsAtXValue(float xVal, float x, float y) {
+    protected List<Highlight> getHighlightsAtXPos(float xVal, float x, float y) {
 
         mHighlightBuffer.clear();
 

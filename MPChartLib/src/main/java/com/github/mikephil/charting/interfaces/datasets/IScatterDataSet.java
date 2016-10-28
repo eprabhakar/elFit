@@ -1,7 +1,7 @@
 package com.github.mikephil.charting.interfaces.datasets;
 
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.renderer.scatter.IShapeRenderer;
+import com.github.mikephil.charting.renderer.scatter.ShapeRenderer;
 
 /**
  * Created by philipp on 21/10/15.
@@ -30,9 +30,9 @@ public interface IScatterDataSet extends ILineScatterCandleRadarDataSet<Entry> {
     int getScatterShapeHoleColor();
 
     /**
-     * Returns the IShapeRenderer responsible for rendering this DataSet.
+     * Returns the ShapeRenderer responsible for rendering this DataSet.
      *
      * @return
      */
-    IShapeRenderer getShapeRenderer();
+    ShapeRenderer getShapeRenderer();
 }

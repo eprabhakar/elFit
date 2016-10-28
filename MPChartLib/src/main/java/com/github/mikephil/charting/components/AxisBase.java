@@ -5,8 +5,8 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.util.Log;
 
+import com.github.mikephil.charting.formatter.AxisValueFormatter;
 import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.utils.Utils;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public abstract class AxisBase extends ComponentBase {
     /**
      * custom formatter that is used instead of the auto-formatter if set
      */
-    protected IAxisValueFormatter mAxisValueFormatter;
+    protected AxisValueFormatter mAxisValueFormatter;
 
     private int mGridColor = Color.GRAY;
 
@@ -91,11 +91,6 @@ public abstract class AxisBase extends ComponentBase {
     protected boolean mDrawLabels = true;
 
     protected boolean mCenterAxisLabels = false;
-
-    /**
-     * the path effect of the axis line that makes dashed lines possible
-     */
-    private DashPathEffect mAxisLineDashPathEffect = null;
 
     /**
      * the path effect of the grid lines that makes dashed lines possible
@@ -183,12 +178,6 @@ public abstract class AxisBase extends ComponentBase {
         return mDrawAxisLine;
     }
 
-    /**
-     * Centers the axis labels instead of drawing them at their original position.
-     * This is useful especially for grouped BarChart.
-     *
-     * @param enabled
-     */
     public void setCenterAxisLabels(boolean enabled) {
         mCenterAxisLabels = enabled;
     }
@@ -471,7 +460,7 @@ public abstract class AxisBase extends ComponentBase {
      *
      * @param f
      */
-    public void setValueFormatter(IAxisValueFormatter f) {
+    public void setValueFormatter(AxisValueFormatter f) {
 
         if (f == null)
             mAxisValueFormatter = new DefaultAxisValueFormatter(mDecimals);
@@ -484,7 +473,7 @@ public abstract class AxisBase extends ComponentBase {
      *
      * @return
      */
-    public IAxisValueFormatter getValueFormatter() {
+    public AxisValueFormatter getValueFormatter() {
 
         if (mAxisValueFormatter == null) {
             mAxisValueFormatter = new DefaultAxisValueFormatter(mDecimals);
@@ -512,17 +501,6 @@ public abstract class AxisBase extends ComponentBase {
     }
 
     /**
-     * Enables the grid line to be drawn in dashed mode, e.g. like this
-     * "- - - - - -". THIS ONLY WORKS IF HARDWARE-ACCELERATION IS TURNED OFF.
-     * Keep in mind that hardware acceleration boosts performance.
-     *
-     * @param effect the DashPathEffect
-     */
-    public void setGridDashedLine(DashPathEffect effect) {
-        mGridDashPathEffect = effect;
-    }
-
-    /**
      * Disables the grid line to be drawn in dashed mode.
      */
     public void disableGridDashedLine() {
@@ -547,58 +525,6 @@ public abstract class AxisBase extends ComponentBase {
         return mGridDashPathEffect;
     }
 
-
-    /**
-     * Enables the axis line to be drawn in dashed mode, e.g. like this
-     * "- - - - - -". THIS ONLY WORKS IF HARDWARE-ACCELERATION IS TURNED OFF.
-     * Keep in mind that hardware acceleration boosts performance.
-     *
-     * @param lineLength  the length of the line pieces
-     * @param spaceLength the length of space in between the pieces
-     * @param phase       offset, in degrees (normally, use 0)
-     */
-    public void enableAxisLineDashedLine(float lineLength, float spaceLength, float phase) {
-        mAxisLineDashPathEffect = new DashPathEffect(new float[]{
-                lineLength, spaceLength
-        }, phase);
-    }
-
-    /**
-     * Enables the axis line to be drawn in dashed mode, e.g. like this
-     * "- - - - - -". THIS ONLY WORKS IF HARDWARE-ACCELERATION IS TURNED OFF.
-     * Keep in mind that hardware acceleration boosts performance.
-     *
-     * @param effect the DashPathEffect
-     */
-    public void setAxisLineDashedLine(DashPathEffect effect) {
-        mAxisLineDashPathEffect = effect;
-    }
-
-    /**
-     * Disables the axis line to be drawn in dashed mode.
-     */
-    public void disableAxisLineDashedLine() {
-        mAxisLineDashPathEffect = null;
-    }
-
-    /**
-     * Returns true if the axis dashed-line effect is enabled, false if not.
-     *
-     * @return
-     */
-    public boolean isAxisLineDashedLineEnabled() {
-        return mAxisLineDashPathEffect == null ? false : true;
-    }
-
-    /**
-     * returns the DashPathEffect that is set for axis line
-     *
-     * @return
-     */
-    public DashPathEffect getAxisLineDashPathEffect() {
-        return mAxisLineDashPathEffect;
-    }
-
     /**
      * ###### BELOW CODE RELATED TO CUSTOM AXIS VALUES ######
      */
@@ -616,7 +542,7 @@ public abstract class AxisBase extends ComponentBase {
      * and the calculation is
      * done automatically.
      */
-    public void resetAxisMaximum() {
+    public void resetAxisMaxValue() {
         mCustomAxisMax = false;
     }
 
@@ -634,7 +560,7 @@ public abstract class AxisBase extends ComponentBase {
      * and the calculation is
      * done automatically.
      */
-    public void resetAxisMinimum() {
+    public void resetAxisMinValue() {
         mCustomAxisMin = false;
     }
 
@@ -656,20 +582,10 @@ public abstract class AxisBase extends ComponentBase {
      *
      * @param min
      */
-    public void setAxisMinimum(float min) {
+    public void setAxisMinValue(float min) {
         mCustomAxisMin = true;
         mAxisMinimum = min;
         this.mAxisRange = Math.abs(mAxisMaximum - min);
-    }
-
-    /**
-     * Use setAxisMinimum(...) instead.
-     *
-     * @param min
-     */
-    @Deprecated
-    public void setAxisMinValue(float min) {
-        setAxisMinimum(min);
     }
 
     /**
@@ -679,20 +595,10 @@ public abstract class AxisBase extends ComponentBase {
      *
      * @param max
      */
-    public void setAxisMaximum(float max) {
+    public void setAxisMaxValue(float max) {
         mCustomAxisMax = true;
         mAxisMaximum = max;
         this.mAxisRange = Math.abs(max - mAxisMinimum);
-    }
-
-    /**
-     * Use setAxisMaximum(...) instead.
-     *
-     * @param max
-     */
-    @Deprecated
-    public void setAxisMaxValue(float max) {
-        setAxisMaximum(max);
     }
 
     /**

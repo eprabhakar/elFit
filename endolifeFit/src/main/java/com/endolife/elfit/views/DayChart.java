@@ -24,7 +24,8 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.AxisValueFormatter;
+
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
@@ -102,6 +103,7 @@ public class DayChart extends Fragment implements OnChartValueSelectedListener{
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         barChart = (BarChart) view.findViewById(R.id.dbar_chart);
+        barChart.setDescription("");
         Context currentContext = this.getContext();
 
         mStepsTrackerDBHelper = new StepsTrackerDBHelper(currentContext);
@@ -127,6 +129,12 @@ public class DayChart extends Fragment implements OnChartValueSelectedListener{
             xAxis.setLabelRotationAngle(90);
             xAxis.setGranularity(1f);
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setAxisMinValue(0.4f);
+
+
+            YAxis yAxisRight = barChart.getAxisRight();
+            yAxisRight.setDrawAxisLine(false);
+            yAxisRight.setDrawLabels(false);
 
             //enable dragging
             barChart.setDragEnabled(true);
@@ -204,7 +212,7 @@ public class DayChart extends Fragment implements OnChartValueSelectedListener{
         void onFragmentInteraction(Uri uri);
     }
 
-    public class MyXAxisValueFormatter implements IAxisValueFormatter {
+    public class MyXAxisValueFormatter implements AxisValueFormatter {
 
         private String[] mValues;
 

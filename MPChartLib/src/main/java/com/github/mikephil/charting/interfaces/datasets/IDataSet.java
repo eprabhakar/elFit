@@ -1,13 +1,11 @@
 package com.github.mikephil.charting.interfaces.datasets;
 
-import android.graphics.DashPathEffect;
 import android.graphics.Typeface;
 
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.DataSet;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.util.List;
 
@@ -60,49 +58,40 @@ public interface IDataSet<T extends Entry> {
     void calcMinMax();
 
     /**
-     * Calculates the min and max y-values from the Entry closest to the given fromX to the Entry closest to the given toX value.
-     * This is only needed for the autoScaleMinMax feature.
-     *
-     * @param fromX
-     * @param toX
-     */
-    void calcMinMaxY(float fromX, float toX);
-
-    /**
-     * Returns the first Entry object found at the given x-value with binary
-     * search. If the no Entry at the specified x-value is found, this method
-     * returns the Entry at the x-value according to the rounding.
+     * Returns the first Entry object found at the given xPos with binary
+     * search. If the no Entry at the specified xPos is found, this method
+     * returns the Entry at the xPos according to the rounding.
      * INFORMATION: This method does calculations at runtime. Do
      * not over-use in performance critical situations.
      *
-     * @param xValue
+     * @param xPos
      * @param rounding determine to round up/down/closest if there is no Entry matching the provided x-index
      * @return
      */
-    T getEntryForXValue(float xValue, DataSet.Rounding rounding);
+    T getEntryForXPos(float xPos, DataSet.Rounding rounding);
 
     /**
-     * Returns the first Entry object found at the given x-value with binary
-     * search. If the no Entry at the specified x-value is found, this method
-     * returns the index at the closest x-value.
+     * Returns the first Entry object found at the given xPos with binary
+     * search. If the no Entry at the specified xPos is found, this method
+     * returns the index at the closest xPos.
      * INFORMATION: This method does calculations at runtime. Do
      * not over-use in performance critical situations.
      *
-     * @param xValue
+     * @param xPos
      * @return
      */
-    T getEntryForXValue(float xValue);
+    T getEntryForXPos(float xPos);
 
     /**
-     * Returns all Entry objects found at the given x-value with binary
-     * search. An empty array if no Entry object at that x-value.
+     * Returns all Entry objects found at the given xPos with binary
+     * search. An empty array if no Entry object at that xPos.
      * INFORMATION: This method does calculations at runtime. Do
      * not over-use in performance critical situations.
      *
-     * @param xValue
+     * @param xPos
      * @return
      */
-    List<T> getEntriesForXValue(float xValue);
+    List<T> getEntriesForXPos(float xPos);
 
     /**
      * Returns the Entry object found at the given index (NOT xIndex) in the values array.
@@ -113,17 +102,17 @@ public interface IDataSet<T extends Entry> {
     T getEntryForIndex(int index);
 
     /**
-     * Returns the first Entry index found at the given x-value with binary
-     * search. If the no Entry at the specified x-value is found, this method
-     * returns the Entry at the closest x-value.
+     * Returns the first Entry index found at the given xPos with binary
+     * search. If the no Entry at the specified xPos is found, this method
+     * returns the Entry at the closest xPos.
      * INFORMATION: This method does calculations at runtime. Do
      * not over-use in performance critical situations.
      *
-     * @param xValue
+     * @param xPos
      * @param rounding determine to round up/down/closest if there is no Entry matching the provided x-index
      * @return
      */
-    int getEntryIndex(float xValue, DataSet.Rounding rounding);
+    int getEntryIndex(float xPos, DataSet.Rounding rounding);
 
     /**
      * Returns the position of the provided entry in the DataSets Entry array.
@@ -194,12 +183,12 @@ public interface IDataSet<T extends Entry> {
     boolean removeEntry(T e);
 
     /**
-     * Removes the Entry object closest to the given x-value from the DataSet.
+     * Removes the Entry object closest to the given xPos from the DataSet.
      * Returns true if an Entry was removed, false if no Entry could be removed.
      *
-     * @param xValue
+     * @param xPos
      */
-    boolean removeEntryByXValue(float xValue);
+    boolean removeEntryByXPos(float xPos);
 
     /**
      * Removes the Entry object at the given index in the values array from the DataSet.
@@ -305,14 +294,14 @@ public interface IDataSet<T extends Entry> {
      *
      * @param f
      */
-    void setValueFormatter(IValueFormatter f);
+    void setValueFormatter(ValueFormatter f);
 
     /**
      * Returns the formatter used for drawing the values inside the chart.
      *
      * @return
      */
-    IValueFormatter getValueFormatter();
+    ValueFormatter getValueFormatter();
 
     /**
      * Returns true if the valueFormatter object of this DataSet is null.
@@ -378,34 +367,6 @@ public interface IDataSet<T extends Entry> {
      * @return
      */
     float getValueTextSize();
-
-    /**
-     * The form to draw for this dataset in the legend.
-     * <p/>
-     * Return `DEFAULT` to use the default legend form.
-     */
-    Legend.LegendForm getForm();
-
-    /**
-     * The form size to draw for this dataset in the legend.
-     * <p/>
-     * Return `Float.NaN` to use the default legend form size.
-     */
-    float getFormSize();
-
-    /**
-     * The line width for drawing the form of this dataset in the legend
-     * <p/>
-     * Return `Float.NaN` to use the default legend form line width.
-     */
-    float getFormLineWidth();
-
-    /**
-     * The line dash path effect used for shapes that consist of lines.
-     * <p/>
-     * Return `null` to use the default legend form line dash effect.
-     */
-    DashPathEffect getFormLineDashEffect();
 
     /**
      * set this to true to draw y-values on the chart NOTE (for bar and

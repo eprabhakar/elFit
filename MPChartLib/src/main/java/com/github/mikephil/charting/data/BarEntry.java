@@ -142,15 +142,7 @@ public class BarEntry extends Entry {
         return mYVals != null;
     }
 
-    /**
-     * Use `getSumBelow(stackIndex)` instead.
-     */
-    @Deprecated
     public float getBelowSum(int stackIndex) {
-        return getSumBelow(stackIndex);
-    }
-
-    public float getSumBelow(int stackIndex) {
 
         if (mYVals == null)
             return 0;

@@ -9,7 +9,6 @@ import com.github.mikephil.charting.charts.CombinedChart.DrawOrder;
 import com.github.mikephil.charting.data.ChartData;
 import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.interfaces.dataprovider.BarLineScatterCandleBubbleDataProvider;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.lang.ref.WeakReference;
@@ -31,20 +30,20 @@ public class CombinedChartRenderer extends DataRenderer {
     public CombinedChartRenderer(CombinedChart chart, ChartAnimator animator, ViewPortHandler viewPortHandler) {
         super(animator, viewPortHandler);
         mChart = new WeakReference<Chart>(chart);
-        createRenderers();
+        createRenderers(chart, animator, viewPortHandler);
     }
 
     /**
      * Creates the renderers needed for this combined-renderer in the required order. Also takes the DrawOrder into
      * consideration.
+     *
+     * @param chart
+     * @param animator
+     * @param viewPortHandler
      */
-    public void createRenderers() {
+    protected void createRenderers(CombinedChart chart, ChartAnimator animator, ViewPortHandler viewPortHandler) {
 
         mRenderers.clear();
-
-        CombinedChart chart = (CombinedChart)mChart.get();
-        if (chart == null)
-            return;
 
         DrawOrder[] orders = chart.getDrawOrder();
 
@@ -53,23 +52,23 @@ public class CombinedChartRenderer extends DataRenderer {
             switch (order) {
                 case BAR:
                     if (chart.getBarData() != null)
-                        mRenderers.add(new BarChartRenderer(chart, mAnimator, mViewPortHandler));
+                        mRenderers.add(new BarChartRenderer(chart, animator, viewPortHandler));
                     break;
                 case BUBBLE:
                     if (chart.getBubbleData() != null)
-                        mRenderers.add(new BubbleChartRenderer(chart, mAnimator, mViewPortHandler));
+                        mRenderers.add(new BubbleChartRenderer(chart, animator, viewPortHandler));
                     break;
                 case LINE:
                     if (chart.getLineData() != null)
-                        mRenderers.add(new LineChartRenderer(chart, mAnimator, mViewPortHandler));
+                        mRenderers.add(new LineChartRenderer(chart, animator, viewPortHandler));
                     break;
                 case CANDLE:
                     if (chart.getCandleData() != null)
-                        mRenderers.add(new CandleStickChartRenderer(chart, mAnimator, mViewPortHandler));
+                        mRenderers.add(new CandleStickChartRenderer(chart, animator, viewPortHandler));
                     break;
                 case SCATTER:
                     if (chart.getScatterData() != null)
-                        mRenderers.add(new ScatterChartRenderer(chart, mAnimator, mViewPortHandler));
+                        mRenderers.add(new ScatterChartRenderer(chart, animator, viewPortHandler));
                     break;
             }
         }

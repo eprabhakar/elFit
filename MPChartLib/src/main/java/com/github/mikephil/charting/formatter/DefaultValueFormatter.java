@@ -12,13 +12,12 @@ import java.text.DecimalFormat;
  *
  * @author Philipp Jahoda
  */
-public class DefaultValueFormatter implements IValueFormatter
-{
+public class DefaultValueFormatter implements ValueFormatter {
 
     /**
-     * DecimalFormat for formatting
+     * FormattedStringCache for formatting and caching.
      */
-    protected DecimalFormat mFormat;
+    protected FormattedStringCache.Generic<Integer, Float> mFormattedStringCache;
 
     protected int mDecimalDigits;
 
@@ -48,16 +47,15 @@ public class DefaultValueFormatter implements IValueFormatter
             b.append("0");
         }
 
-        mFormat = new DecimalFormat("###,###,###,##0" + b.toString());
+        mFormattedStringCache = new FormattedStringCache.Generic<>(new DecimalFormat("###,###,###,##0" + b.toString()));
+
     }
 
     @Override
     public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
 
-        // put more logic here ...
-        // avoid memory allocations here (for performance reasons)
+        return mFormattedStringCache.getFormattedValue(value, dataSetIndex);
 
-        return mFormat.format(value);
     }
 
     /**

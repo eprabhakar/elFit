@@ -25,7 +25,7 @@ public class CandleDataSet extends LineScatterCandleRadarDataSet<CandleEntry> im
     /**
      * should the candle bars show?
      * when false, only "ticks" will show
-     * <p/>
+     *
      * - default: true
      */
     private boolean mShowCandleBar = true;
@@ -101,15 +101,30 @@ public class CandleDataSet extends LineScatterCandleRadarDataSet<CandleEntry> im
     }
 
     @Override
-    protected void calcMinMax(CandleEntry e) {
+    public void calcMinMax() {
 
-        if (e.getLow() < mYMin)
-            mYMin = e.getLow();
+        if (mValues == null || mValues.isEmpty())
+            return;
 
-        if (e.getHigh() > mYMax)
-            mYMax = e.getHigh();
+        mYMax = -Float.MAX_VALUE;
+        mYMin = Float.MAX_VALUE;
+        mXMax = -Float.MAX_VALUE;
+        mXMin = Float.MAX_VALUE;
 
-        calcMinMaxX(e);
+        for (CandleEntry e : mValues) {
+
+            if (e.getLow() < mYMin)
+                mYMin = e.getLow();
+
+            if (e.getHigh() > mYMax)
+                mYMax = e.getHigh();
+
+            if (e.getX() < mXMin)
+                mXMin = e.getX();
+
+            if (e.getX() > mXMax)
+                mXMax = e.getX();
+        }
     }
 
     /**

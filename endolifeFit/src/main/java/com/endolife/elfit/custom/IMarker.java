@@ -1,10 +1,14 @@
-package com.github.mikephil.charting.components;
+package com.endolife.elfit.custom;
 
 import android.graphics.Canvas;
 
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.MPPointF;
+
+/**
+ * Created by eprabhakar on 27/10/16.
+ */
 
 public interface IMarker {
 
@@ -24,7 +28,7 @@ public interface IMarker {
      * @param posY This is the X position at which the marker wants to be drawn.
      *             You can adjust the offset conditionally based on this argument.
      */
-    MPPointF getOffsetForDrawingAtPoint(float posX, float posY);
+    MPPointF getOffsetForDrawingAtPos(float posX, float posY);
 
     /**
      * This method enables a specified custom IMarker to update it's content every time the IMarker is redrawn.

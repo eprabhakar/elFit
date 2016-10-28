@@ -1,7 +1,6 @@
 package com.github.mikephil.charting.data;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 
 /**
  * Created by Philipp Jahoda on 31/05/16.
@@ -50,13 +49,11 @@ public class PieEntry extends Entry {
     @Override
     public void setX(float x) {
         super.setX(x);
-        Log.i("DEPRECATED", "Pie entries do not have x values");
     }
 
     @Deprecated
     @Override
     public float getX() {
-        Log.i("DEPRECATED", "Pie entries do not have x values");
         return super.getX();
     }
 

@@ -10,8 +10,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.endolife.elfit.R;
+import com.endolife.elfit.custom.IMarker;
 import com.endolife.elfit.custom.XYMarkerView;
 import com.endolife.elfit.database.StepsTrackerDBHelper;
 import com.endolife.elfit.models.BarChartTimeEntry;
@@ -24,11 +27,13 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.AxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.MPPointF;
 
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,6 +112,7 @@ public class HourChart extends Fragment implements OnChartValueSelectedListener{
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
         mBarChart = (BarChart) view.findViewById(R.id.fbar_chart);
+        mBarChart.setDescription("");
         mBarChart.setOnChartValueSelectedListener(this);
         Context currentContext = this.getContext();
         mStepsTrackerDBHelper = new StepsTrackerDBHelper(currentContext);
@@ -144,14 +150,19 @@ public class HourChart extends Fragment implements OnChartValueSelectedListener{
         xAxis.setLabelRotationAngle(90);
         xAxis.setGranularity(1f);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setAxisMinValue(0.4f);
 
-        IAxisValueFormatter xAxisFormatter = xAxis.getValueFormatter();
+        AxisValueFormatter xAxisFormatter = xAxis.getValueFormatter();
 
-        XYMarkerView mv = new XYMarkerView(currentContext, xAxisFormatter);
-        mv.setChartView(mBarChart); // For bounds control
-        mBarChart.setMarker(mv); // Set the marker to the chart
+        XYMarkerView marker = new XYMarkerView(currentContext, R.layout.custom_marker_view);
+        mBarChart.setMarkerView(marker);
 
         YAxis leftAxis = mBarChart.getAxisLeft();
+
+
+        YAxis yAxisRight = mBarChart.getAxisRight();
+        yAxisRight.setDrawAxisLine(false);
+        yAxisRight.setDrawLabels(false);
 
         LimitLine ll = new LimitLine(1f, "1 minute");
         ll.setLineColor(Color.MAGENTA);
@@ -160,13 +171,13 @@ public class HourChart extends Fragment implements OnChartValueSelectedListener{
         ll.setTextColor(Color.BLACK);
         ll.setTextSize(8f);
 
-        LimitLine ll5 = new LimitLine(5f, "1 minute");
+        LimitLine ll5 = new LimitLine(5f, "5 minutes");
         ll5.setLineColor(Color.MAGENTA);
         ll5.setLineWidth(1f);
         ll5.enableDashedLine(10f, 10f, 0f);
         ll5.setTextColor(Color.BLACK);
         ll5.setTextSize(8f);
-// .. and more styling options
+        // .. and more styling options
 
         leftAxis.addLimitLine(ll);
 
@@ -176,15 +187,6 @@ public class HourChart extends Fragment implements OnChartValueSelectedListener{
 
         // enable touch gestures
         mBarChart.setTouchEnabled(true);
-
-        // enable scaling and dragging
-        // mChart.setDragEnabled(true);
-        mBarChart.setScaleEnabled(true);
-        // mChart.setScaleXEnabled(true);
-        // mChart.setScaleYEnabled(true);
-
-        // if disabled, scaling can be done on x- and y-axis separately
-        mBarChart.setPinchZoom(true);
 
         BarDataSet set1 = new BarDataSet(entriesGroup1, "Walking");
         BarDataSet set2 = new BarDataSet(entriesGroup2, "Jogging");
@@ -196,14 +198,6 @@ public class HourChart extends Fragment implements OnChartValueSelectedListener{
         set2.setDrawValues(false);
         set3.setDrawValues(false);
 
-
-        //set1.setHighlightEnabled(true);
-
-        //set2.setHighlightEnabled(true); // disable highlighting for DataSet
-        //set3.setHighlightEnabled(true);
-
-        //barChart.highlightValues(null);
-        //barChart.setHighlightPerTapEnabled(true);
 
         //set colors
         set1.setColors(new int[]{R.color.walkingColor}, currentContext);
@@ -294,7 +288,7 @@ public class HourChart extends Fragment implements OnChartValueSelectedListener{
     }
 
 
-    public class MyXAxisValueFormatter implements IAxisValueFormatter {
+    public class MyXAxisValueFormatter implements AxisValueFormatter {
 
         private String[] mValues;
 

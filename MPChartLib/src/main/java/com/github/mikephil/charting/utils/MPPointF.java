@@ -20,15 +20,12 @@ public class MPPointF extends ObjectPool.Poolable {
         pool.setReplenishPercentage(0.5f);
     }
 
-    public MPPointF() {
-    }
-
-    public MPPointF(float x, float y) {
+    public MPPointF(float x, float y){
         this.x = x;
         this.y = y;
     }
 
-    public static MPPointF getInstance(float x, float y) {
+    public static MPPointF getInstance(float x, float y){
         MPPointF result = pool.get();
         result.x = x;
         result.y = y;

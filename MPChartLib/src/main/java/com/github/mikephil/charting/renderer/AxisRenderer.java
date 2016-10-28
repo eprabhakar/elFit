@@ -154,9 +154,8 @@ public abstract class AxisRenderer extends Renderer {
         int labelCount = mAxis.getLabelCount();
         double range = Math.abs(yMax - yMin);
 
-        if (labelCount == 0 || range <= 0 || Double.isInfinite(range)) {
+        if (labelCount == 0 || range <= 0) {
             mAxis.mEntries = new float[]{};
-            mAxis.mCenteredEntries = new float[]{};
             mAxis.mEntryCount = 0;
             return;
         }
@@ -250,9 +249,7 @@ public abstract class AxisRenderer extends Renderer {
                 mAxis.mCenteredEntries = new float[n];
             }
 
-            float offset = 0.f;
-            if (mAxis.mEntries.length > 1)
-                offset = (mAxis.mEntries[1] - mAxis.mEntries[0]) / 2f;
+            float offset = (mAxis.mEntries[1] - mAxis.mEntries[0]) / 2f;
 
             for (int i = 0; i < n; i++) {
                 mAxis.mCenteredEntries[i] = mAxis.mEntries[i] + offset;

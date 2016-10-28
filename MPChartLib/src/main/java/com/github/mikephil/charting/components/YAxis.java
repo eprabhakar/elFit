@@ -201,16 +201,16 @@ public class YAxis extends AxisBase {
 
     /**
      * This method is deprecated.
-     * Use setAxisMinimum(...) / setAxisMaximum(...) instead.
+     * Use setAxisMinValue(...) / setAxisMaxValue(...) instead.
      *
      * @param startAtZero
      */
     @Deprecated
     public void setStartAtZero(boolean startAtZero) {
         if (startAtZero)
-            setAxisMinimum(0f);
+            setAxisMinValue(0f);
         else
-            resetAxisMinimum();
+            resetAxisMinValue();
     }
 
     /**
