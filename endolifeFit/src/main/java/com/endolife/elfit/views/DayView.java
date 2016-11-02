@@ -83,65 +83,6 @@ public class DayView extends AppCompatActivity implements  HourChart.OnFragmentI
         }
 
 
-
-        /*
-
-        barChart = (BarChart) findViewById(R.id.dbar_chart);
-
-        mStepsTrackerDBHelper = new StepsTrackerDBHelper(this);
-        mStepCountList = mStepsTrackerDBHelper.readStepsEntries();
-
-        values = new String[mStepCountList.size()+1];
-        List<BarEntry> entriesGroup1 = new ArrayList<>();
-
-        // fill the lists
-        int step = 0;
-        float sessionStart = 0f;
-        for(DateStepsModel data:mStepCountList) {
-            values[++step] = data.mDate;
-            entriesGroup1.add(new BarEntry(step,data.mStepCount));
-        }
-
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setValueFormatter(new DayView.MyXAxisValueFormatter(values));
-        //XAxis.XAxisPosition pos = XAxis.XAxisPosition.BOTTOM;
-        xAxis.setLabelRotationAngle(90);
-        xAxis.setGranularity(1f);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-
-        //enable dragging
-        barChart.setDragEnabled(true);
-
-
-        // enable touch gestures
-        barChart.setTouchEnabled(true);
-
-        // enable scaling and dragging
-        // mChart.setDragEnabled(true);
-        barChart.setScaleEnabled(true);
-        // mChart.setScaleXEnabled(true);
-        // mChart.setScaleYEnabled(true);
-
-        // if disabled, scaling can be done on x- and y-axis separately
-        barChart.setPinchZoom(true);
-
-        barChart.setOnChartValueSelectedListener(this);
-
-        BarDataSet set1 = new BarDataSet(entriesGroup1, "Total Steps");
-        set1.setColors(new int[]{R.color.walkingColor}, this);
-
-        float groupSpace = 0.04f;
-        float barSpace = 0.02f; // x2 dataset
-        float barWidth = 0.94f; // x2 dataset
-        // (0.02 + 0.30) * 3 + 0.04 = 1.00 -> interval per "group"
-
-        BarData data = new BarData(set1);
-        data.setBarWidth(barWidth); // set the width of each bar
-        barChart.setData(data);
-//        barChart.groupBars(sessionStart, groupSpace, barSpace); // perform the "explicit" grouping
-        barChart.invalidate(); // refresh
-
-        */
     }
 
     @Override
@@ -158,29 +99,4 @@ public class DayView extends AppCompatActivity implements  HourChart.OnFragmentI
         ft.addToBackStack(null);
         ft.commit();
     }
-
-
-    public class MyXAxisValueFormatter implements AxisValueFormatter {
-
-        private String[] mValues;
-
-        public MyXAxisValueFormatter(String[] values) {
-            Log.d(TAG, "inside formatter constructer:");
-            this.mValues = values;
-        }
-
-        @Override
-        public String getFormattedValue(float value, AxisBase axis) {
-            // "value" represents the position of the label on the axis (x or y)
-            //Log.d(TAG, "Formatter : " + mValues[(int) value]);
-            return mValues[(int) value];
-        }
-
-        /** this is only needed if numbers are returned, else return 0 */
-        @Override
-        public int getDecimalDigits() { return 0; }
-    }
-
-
-
 }

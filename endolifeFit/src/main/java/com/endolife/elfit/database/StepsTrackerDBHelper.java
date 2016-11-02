@@ -14,6 +14,7 @@ import android.util.Log;
 import com.endolife.elfit.models.BarChartTimeEntry;
 import com.endolife.elfit.models.DateStepsModel;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -218,7 +219,7 @@ public class StepsTrackerDBHelper extends SQLiteOpenHelper {
                         walkingCount = cTime.getInt((cTime.getColumnIndex(STEPS_COUNT)));
                         Log.d(TAG, "Walking count: " + walkingCount + "- Session Id : " + barChartTimeEntry.sessionId);
                         //timeDuration in minutes
-                        barChartTimeEntry.timeDuration = (walkingCount*1.0f)  / 60;
+                        barChartTimeEntry.timeDuration = round((walkingCount*1.0f)  / 60,2);
                         Log.d(TAG, "Time duration: " + barChartTimeEntry.timeDuration);
                         barChartTimeEntry.type = WALKING;
                         barChartTimeEntries.add(barChartTimeEntry);
@@ -242,7 +243,7 @@ public class StepsTrackerDBHelper extends SQLiteOpenHelper {
                         barChartTimeEntry.sessionId = sessionNameList.get(i);
                         joggingCount = cTime.getInt((cTime.getColumnIndex(STEPS_COUNT)));
                         Log.d(TAG, "Jogging count: " + joggingCount + "- Session Id : " + barChartTimeEntry.sessionId);
-                        barChartTimeEntry.timeDuration = (joggingCount*0.7f) / 60;
+                        barChartTimeEntry.timeDuration = round((joggingCount*0.7f) / 60,2);
                         barChartTimeEntry.type = JOGGING;
                         barChartTimeEntries.add(barChartTimeEntry);
                         break;
@@ -265,7 +266,7 @@ public class StepsTrackerDBHelper extends SQLiteOpenHelper {
                         barChartTimeEntry.sessionId = sessionNameList.get(i);
                         runningCount = cTime.getInt((cTime.getColumnIndex(STEPS_COUNT)));
                         Log.d(TAG, "Running count: " + runningCount + "- Session Id : " + barChartTimeEntry.sessionId);
-                        barChartTimeEntry.timeDuration = (runningCount*0.4f) / 60;
+                        barChartTimeEntry.timeDuration = round((runningCount*0.4f) / 60 , 2);
                         barChartTimeEntry.type = RUNNING;
                         barChartTimeEntries.add(barChartTimeEntry);
                         break;
@@ -282,6 +283,19 @@ public class StepsTrackerDBHelper extends SQLiteOpenHelper {
         }
 
         return barChartTimeEntries;
+    }
+
+    /**
+     * Round to certain number of decimals
+     *
+     * @param d
+     * @param decimalPlace
+     * @return
+     */
+    public static float round(float d, int decimalPlace) {
+        BigDecimal bd = new BigDecimal(Float.toString(d));
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        return bd.floatValue();
     }
 
     //Get sessions and their time durations for each step type on a given day
@@ -371,7 +385,7 @@ public class StepsTrackerDBHelper extends SQLiteOpenHelper {
                 //Add a new barchart entry with details
                 BarChartTimeEntry barChartTimeEntry = new BarChartTimeEntry();
                 barChartTimeEntry.sessionId = sessionNameList.get(i);
-                barChartTimeEntry.timeDuration = currentSessionDuration;
+                barChartTimeEntry.timeDuration = round(currentSessionDuration,2);
                 barChartTimeEntries.add(barChartTimeEntry);
 
             }

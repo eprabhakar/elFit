@@ -3,6 +3,7 @@ package com.endolife.elfit.views;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,6 +19,7 @@ import com.endolife.elfit.database.StepsTrackerDBHelper;
 import com.endolife.elfit.models.BarChartTimeEntry;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -159,6 +161,7 @@ public class TimeChart extends AppCompatActivity implements OnChartGestureListen
         barChart.setOnChartGestureListener(this);
 
         barChart.setData(data);
+        //barChart.draw();
         // barChart.groupBars(sessionStart, groupSpace, barSpace); // perform the "explicit" grouping
         barChart.invalidate(); // refresh
     }
@@ -174,7 +177,7 @@ public class TimeChart extends AppCompatActivity implements OnChartGestureListen
         String[] values = new String[mTimeEntriesList.size()+1];
         Log.d(TAG, "size of mTimeEntriesList inside loadChartByDate: " + values.length);
 
-        if(mTimeEntriesList.size() >0) {
+        if(mTimeEntriesList.size() >1) {
 
             List<BarEntry> entriesGroup1 = new ArrayList<>();
 
@@ -197,7 +200,7 @@ public class TimeChart extends AppCompatActivity implements OnChartGestureListen
             xAxis.setLabelRotationAngle(90);
             xAxis.setGranularity(1f);
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-                xAxis.setLabelCount(23);
+           //     xAxis.setLabelCount(23,true);
             //xAxis.setXOffset(0.4f);
             //xAxis.setGridColor(Color.MAGENTA);
             //xAxis.setDrawAxisLine(false);
@@ -205,17 +208,39 @@ public class TimeChart extends AppCompatActivity implements OnChartGestureListen
 
             YAxis yAxisLeft = barChart.getAxisLeft();
             //yAxisLeft.setDrawAxisLine(false);
-           // yAxisLeft.setAxisMinValue(0.4f);
-              //  yAxisLeft.setAxisMaxValue(5f);
+
 
                //yAxisLeft.setGranularityEnabled(true);
-               //yAxisLeft.setGranularity(0.2f);
+               yAxisLeft.setGranularity(1f);
+               yAxisLeft.setAxisMinValue(0f);
+               yAxisLeft.setAxisMaxValue(5f);
            // yAxisLeft.setDrawGridLines(false);
-              //  yAxisLeft.setLabelCount(5);
+                //yAxisLeft.setLabelCount(5);
              //yAxisLeft.setGridLineWidth(1f);
+                yAxisLeft.setDrawGridLines(false);
+                yAxisLeft.setDrawLabels(false);
+
+                //stop scaling / dragging on y axix
+                barChart.setScaleYEnabled(false);
+
+                LimitLine ll = new LimitLine(1f, "1 minute");
+                ll.setLineColor(Color.MAGENTA);
+                ll.setLineWidth(1f);
+                ll.enableDashedLine(10f, 10f, 0f);
+                ll.setTextColor(Color.MAGENTA);
+                ll.setTextSize(12f);
+                yAxisLeft.addLimitLine(ll);
 
 
-            YAxis yAxisRight = barChart.getAxisRight();
+                LimitLine l5 = new LimitLine(4f, "4 minutes");
+                l5.setLineColor(Color.MAGENTA);
+                l5.setLineWidth(1f);
+                l5.enableDashedLine(10f, 10f, 0f);
+                l5.setTextColor(Color.MAGENTA);
+                l5.setTextSize(12f);
+                yAxisLeft.addLimitLine(l5);
+
+                YAxis yAxisRight = barChart.getAxisRight();
             yAxisRight.setEnabled(false);
 
             //yAxisRight.setGridColor(Color.MAGENTA);
@@ -225,9 +250,10 @@ public class TimeChart extends AppCompatActivity implements OnChartGestureListen
 
             //enable dragging
             barChart.setDragEnabled(true);
+               // barChart.setDragOffsetY(0f);
 
             // if disabled, scaling can be done on x- and y-axis separately
-            //barChart.setPinchZoom(true);
+            barChart.setPinchZoom(false);
 
 
                 String dateText = this.getFormattedDate(day);
@@ -235,8 +261,9 @@ public class TimeChart extends AppCompatActivity implements OnChartGestureListen
                 BarDataSet set1 = new BarDataSet(entriesGroup1, dateText);
 
 
+
                 //set colors
-                set1.setColors(new int[]{R.color.runningColor}, this);
+                set1.setColors(new int[]{R.color.charbarColor}, this);
                 //set1.setHighlightEnabled(true);
 
                 //disable draw values and set the marker for better view
@@ -246,7 +273,7 @@ public class TimeChart extends AppCompatActivity implements OnChartGestureListen
 
                 float groupSpace = 0.04f;
                 float barSpace = 0.02f; // x2 dataset
-                float barWidth = 0.40f; // x2 dataset
+                float barWidth = 0.5f; // x2 dataset
                 // (0.02 + 0.30) * 3 + 0.04 = 1.00 -> interval per "group"
 
                 BarData data = new BarData(set1);
@@ -255,9 +282,31 @@ public class TimeChart extends AppCompatActivity implements OnChartGestureListen
                 data.setBarWidth(barWidth); // set the width of each bar
                 //set the listner for gesture
 
-                barChart.setVisibleXRangeMaximum(10); // allow 10 values to be displayed at once on the x-axis, not more
+                barChart.setVisibleXRangeMaximum(8); // allow 10 values to be displayed at once on the x-axis, not more
+                barChart.setVisibleYRangeMaximum(8,yAxisLeft.getAxisDependency());
                 //barChart.setVisibleXRangeMinimum(5);
                 barChart.setOnChartGestureListener(this);
+/*
+                ViewPortHandler viewPortHandler = barChart.getViewPortHandler();
+                MPPointF chartCenter = barChart.getCenter();
+                Log.d(TAG, "Chart center of view x:" + barChart.getCenterOfView().getX());
+                Log.d(TAG, "set Max x:" + set1.getXMax());
+                Log.d(TAG, "set Min x:" + set1.getXMin());
+                Log.d(TAG, "Chart width from Viewport handler right: " + viewPortHandler.contentRight());
+                Log.d(TAG, "Chart width from Viewport handler left: " + viewPortHandler.contentLeft());
+
+                float xCenter = ((set1.getXMax() - set1.getXMin())/2);
+
+                LimitLine xlCenter = new LimitLine(xCenter, "Center");
+                xlCenter.setLineColor(Color.MAGENTA);
+                xlCenter.setLineWidth(1f);
+                xlCenter.enableDashedLine(10f, 10f, 0f);
+                xlCenter.setTextColor(Color.MAGENTA);
+                xlCenter.setTextSize(12f);
+                xAxis.addLimitLine(xlCenter);
+                xAxis.setDrawLimitLinesBehindData(true);
+  */
+
 
                 //barChart.setHighlightPerTapEnabled(false);
                 barChart.setTouchEnabled(true);
@@ -386,7 +435,7 @@ public class TimeChart extends AppCompatActivity implements OnChartGestureListen
            // Log.d(TAG, "Formatter : " + mValues[(int) value] + " value: " + value);
             if(mValues.length > (int) value) {
                 return mValues[(int) value];
-            } else return null;
+            } else return "limit";
         }
 
         /** this is only needed if numbers are returned, else return 0 */
@@ -418,7 +467,7 @@ public class TimeChart extends AppCompatActivity implements OnChartGestureListen
 
         //We have to handle the leaf year case -- later
         motionEndX = me.getX(0);
-        if((motionEndX - motionStartX) >100){
+        if((motionEndX - motionStartX) >150){
             Log.d(TAG, "current Day before transition +ve:" + currentDay);
             if(currentDay > 0) {
                 currentDay = currentDay - 1;
@@ -433,7 +482,7 @@ public class TimeChart extends AppCompatActivity implements OnChartGestureListen
             }
 
 
-        } else if((motionEndX-motionStartX) < -100){
+        } else if((motionEndX-motionStartX) < -150){
             Log.d(TAG, "current Day before transition -ve:" + currentDay);
             if(currentDay<= todayDay){
                 currentDay = currentDay+1;

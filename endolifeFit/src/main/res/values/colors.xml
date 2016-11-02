@@ -7,4 +7,6 @@
     <color name="runningColor">#42adf4</color>
     <color name="joggingColor">#c63be5</color>
     <color name="walkingColor">#ef1729</color>
+    <color name="charbarColor">#ff3321</color>
+    <color name="markerBg">#bcb8c1</color>
 </resources>

@@ -21,6 +21,7 @@ import java.text.DecimalFormat;
 public class XYMarkerView extends MarkerView implements IMarker {
 
     private TextView tvContent;
+    private float yOffset;
 
     public XYMarkerView(Context context, int layoutResource) {
         super(context, layoutResource);
@@ -36,6 +37,7 @@ public class XYMarkerView extends MarkerView implements IMarker {
     public void refreshContent(Entry e, Highlight highlight) {
 
         Log.d("XYMarkerView", "refreshContent: " + e.toString());
+        yOffset = e.getY();
 
         tvContent.setText("" + e.getY());
 
@@ -45,12 +47,17 @@ public class XYMarkerView extends MarkerView implements IMarker {
 
     @Override
     public int getXOffset(float xpos) {
-        return 0;
+
+        return -(getWidth()/2);
     }
 
     @Override
     public int getYOffset(float ypos) {
-        return 0;
+        Log.d("XYMarkerView","yoffset is: "+ yOffset);
+
+        if((getHeight()-60)>= (getHeight()/2)) {
+            return getHeight() / 2;
+        } else return 0;
     }
 
     private MPPointF mOffset;
